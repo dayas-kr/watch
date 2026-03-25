@@ -10,6 +10,17 @@
     <!-- SEO -->
     @stack('seo')
 
+    <!-- Prevents theme flash on load -->
+    <script>
+        (() => {
+            const m = matchMedia('(prefers-color-scheme: dark)');
+            const t = localStorage.theme || 'system';
+            const cls = t === 'system' ? (m.matches ? 'dark' : 'light') : t;
+            document.documentElement.className = cls;
+            document.documentElement.dataset.theme = cls;
+        })();
+    </script>
+
     <!-- Head -->
     @stack('head')
 
