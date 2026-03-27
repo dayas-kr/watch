@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\MovieController;
 use App\Http\Controllers\Api\TvShowController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('/api')->middleware('auth')->group(function () {
+Route::prefix('/api')->middleware(['auth', 'ajax'])->group(function () {
   Route::prefix('/movie')->group(function () {
     Route::get('/watchlist',   [MovieController::class, 'watchlist']);
     Route::get('/now_playing', [MovieController::class, 'nowPlaying']);
