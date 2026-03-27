@@ -117,7 +117,7 @@
         'font-medium',
         'whitespace-nowrap',
         'transition-all',
-        'outline-none',
+        'outline-hidden',
         'select-none',
         'active:not-aria-[haspopup]:translate-y-px',
         'disabled:pointer-events-none',
