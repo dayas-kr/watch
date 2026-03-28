@@ -27,8 +27,42 @@ class TmdbClient
     }
 
     // -------------------------------------------------------
+    // SEARCH
+    // -------------------------------------------------------
+
+    public function search(array $query = []): array
+    {
+        return $this->get('/search/multi', $query);
+    }
+
+    public function searchCollection(array $query = []): array
+    {
+        return $this->get('/search/collection', $query);
+    }
+
+    public function searchCompanies(array $query = []): array
+    {
+        return $this->get('/search/company', $query);
+    }
+
+    public function searchKeywords(array $query = []): array
+    {
+        return $this->get('/search/keyword', $query);
+    }
+
+    public function searchPeople(array $query = []): array
+    {
+        return $this->get('/search/person', $query);
+    }
+
+    // -------------------------------------------------------
     // MOVIES
     // -------------------------------------------------------
+
+    public function searchMovies(array $query = []): array
+    {
+        return $this->get('/search/movie', $query);
+    }
 
     public function movie(int|string $id, array $query = []): array
     {
@@ -88,6 +122,11 @@ class TmdbClient
     // -------------------------------------------------------
     // TV
     // -------------------------------------------------------
+
+    public function searchTvShows(array $query = []): array
+    {
+        return $this->get('/search/tv', $query);
+    }
 
     public function tvShow(int|string $id, array $query = []): array
     {
