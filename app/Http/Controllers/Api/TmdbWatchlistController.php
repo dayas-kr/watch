@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\HandlesTmdb;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Watchlist\ToggleWatchlistRequest;
 use App\Http\Requests\Watchlist\WatchlistRequest;
 use App\Services\TmdbClient;
 use App\Support\Concerns\BuildsQuery;
@@ -41,5 +42,12 @@ class TmdbWatchlistController extends Controller
         $result = $this->client->tvWatchlist($query);
 
         return $this->handleTmdb(fn() => $result, 'No TV shows found in your watchlist.');
+    }
+
+    public function toggle(ToggleWatchlistRequest $request): JsonResponse
+    {
+        $query = $this->buildQuery($request, ['media_type', 'media_id', 'watchlist']);
+
+        return $this->handleTmdb(fn() => $this->client->toggleWatchlist($query));
     }
 }

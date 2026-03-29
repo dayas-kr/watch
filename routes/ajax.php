@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\TmdbTvController;
 use App\Http\Controllers\Api\TmdbWatchlistController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('/api')->middleware(['ajax', 'auth'])->group(function () {
+Route::prefix('/api')->group(function () {
   Route::prefix('/search')->group(function () {
     Route::get('/multi', [TmdbSearchController::class, 'multi'])->name('api.search.multi');
     Route::get('/movie', [TmdbSearchController::class, 'movie'])->name('api.search.movie');
@@ -20,6 +20,8 @@ Route::prefix('/api')->middleware(['ajax', 'auth'])->group(function () {
   Route::prefix('/watchlist')->group(function () {
     Route::get('/movie', [TmdbWatchlistController::class, 'movie'])->name('api.watchlist.movie');
     Route::get('/tv', [TmdbWatchlistController::class, 'tv'])->name('api.watchlist.tv');
+
+    Route::post('/', [TmdbWatchlistController::class, 'toggle'])->name('api.watchlist.toggle');
   });
 
   Route::prefix('/movie')->group(function () {
