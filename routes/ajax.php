@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\TmdbMovieController;
 use App\Http\Controllers\Api\TmdbSearchController;
 use App\Http\Controllers\Api\TmdbWatchlistController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('/api')->middleware(['auth', 'ajax'])->group(function () {
+Route::prefix('/api')->middleware(['ajax', 'auth'])->group(function () {
   Route::prefix('/search')->group(function () {
     Route::get('/multi', [TmdbSearchController::class, 'multi'])->name('api.search.multi');
     Route::get('/movie', [TmdbSearchController::class, 'movie'])->name('api.search.movie');
@@ -21,7 +22,18 @@ Route::prefix('/api')->middleware(['auth', 'ajax'])->group(function () {
   });
 
   Route::prefix('/movie')->group(function () {
-    // TODO: static & dynamic movie routes
+    Route::get('/now_playing', [TmdbMovieController::class, 'nowPlaying'])->name('api.movie.now_playing');
+    Route::get('/popular', [TmdbMovieController::class, 'popular'])->name('api.movie.popular');
+    Route::get('/top_rated', [TmdbMovieController::class, 'topRated'])->name('api.movie.top_rated');
+    Route::get('/upcoming', [TmdbMovieController::class, 'upcoming'])->name('api.movie.upcoming');
+
+    Route::get('/{movie_id}', [TmdbMovieController::class, 'show'])->name('api.movie.show');
+    Route::get('/{movie_id}/credits', [TmdbMovieController::class, 'credits'])->name('api.movie.credits');
+    Route::get('/{movie_id}/images', [TmdbMovieController::class, 'credits'])->name('api.movie.images');
+    Route::get('/{movie_id}/videos', [TmdbMovieController::class, 'credits'])->name('api.movie.videos');
+    Route::get('/{movie_id}/keywords', [TmdbMovieController::class, 'credits'])->name('api.movie.keywords');
+    Route::get('/{movie_id}/recommendations', [TmdbMovieController::class, 'credits'])->name('api.movie.recommendations');
+    Route::get('/{movie_id}/similar', [TmdbMovieController::class, 'credits'])->name('api.movie.similar');
   });
 
   Route::prefix('/tv')->group(function () {
