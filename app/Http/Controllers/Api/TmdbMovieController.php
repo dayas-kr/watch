@@ -140,15 +140,6 @@ class TmdbMovieController extends Controller
         return $this->handleTmdb(fn() => $result, 'No videos found for this movie.');
     }
 
-    public function keywords(MovieRequest $request): JsonResponse
-    {
-        $movieId = $request->validated()['movie_id'];
-
-        $result = $this->client->movieImages($movieId);
-
-        return $this->handleTmdb(fn() => $result, 'No keywords found for this movie.');
-    }
-
     public function recommendations(MovieRequest $request): JsonResponse
     {
         $movieId = $request->validated()['movie_id'];

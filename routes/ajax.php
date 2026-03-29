@@ -29,11 +29,10 @@ Route::prefix('/api')->middleware(['ajax', 'auth'])->group(function () {
 
     Route::get('/{movie_id}', [TmdbMovieController::class, 'show'])->name('api.movie.show');
     Route::get('/{movie_id}/credits', [TmdbMovieController::class, 'credits'])->name('api.movie.credits');
-    Route::get('/{movie_id}/images', [TmdbMovieController::class, 'credits'])->name('api.movie.images');
-    Route::get('/{movie_id}/videos', [TmdbMovieController::class, 'credits'])->name('api.movie.videos');
-    Route::get('/{movie_id}/keywords', [TmdbMovieController::class, 'credits'])->name('api.movie.keywords');
-    Route::get('/{movie_id}/recommendations', [TmdbMovieController::class, 'credits'])->name('api.movie.recommendations');
-    Route::get('/{movie_id}/similar', [TmdbMovieController::class, 'credits'])->name('api.movie.similar');
+    Route::get('/{movie_id}/images', [TmdbMovieController::class, 'images'])->name('api.movie.images');
+    Route::get('/{movie_id}/videos', [TmdbMovieController::class, 'videos'])->name('api.movie.videos');
+    Route::get('/{movie_id}/recommendations', [TmdbMovieController::class, 'recommendations'])->name('api.movie.recommendations');
+    Route::get('/{movie_id}/similar', [TmdbMovieController::class, 'similar'])->name('api.movie.similar');
   });
 
   Route::prefix('/tv')->group(function () {
