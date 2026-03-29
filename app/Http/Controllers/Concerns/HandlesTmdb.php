@@ -9,7 +9,7 @@ use Throwable;
 
 trait HandlesTmdb
 {
-    protected function handleTmdb(callable $callback, string $errorMessage): JsonResponse
+    protected function handleTmdb(callable $callback, string $errorMessage = 'Resource not found.'): JsonResponse
     {
         try {
             return TmdbResponseHelper::handleSuccess($callback());
