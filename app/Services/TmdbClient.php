@@ -30,12 +30,22 @@ class TmdbClient
     // SEARCH
     // -------------------------------------------------------
 
-    public function search(array $query = []): array
+    public function searchAllTitles(array $query = []): array
     {
         return $this->get('/search/multi', $query);
     }
 
-    public function searchCollection(array $query = []): array
+    public function searchMovies(array $query = []): array
+    {
+        return $this->get('/search/movie', $query);
+    }
+
+    public function searchTv(array $query = []): array
+    {
+        return $this->get('/search/tv', $query);
+    }
+
+    public function searchCollections(array $query = []): array
     {
         return $this->get('/search/collection', $query);
     }
@@ -56,22 +66,26 @@ class TmdbClient
     }
 
     // -------------------------------------------------------
-    // MOVIES
+    // WATCHLIST
     // -------------------------------------------------------
-
-    public function searchMovies(array $query = []): array
-    {
-        return $this->get('/search/movie', $query);
-    }
-
-    public function movie(int|string $id, array $query = []): array
-    {
-        return $this->get("/movie/{$id}", $query);
-    }
 
     public function movieWatchlist(array $query = []): array
     {
         return $this->getV4("/account/{$this->accountId}/watchlist/movies", $query);
+    }
+
+    public function tvWatchlist(array $query = []): array
+    {
+        return $this->getV4("/account/{$this->accountId}/watchlist/tv", $query);
+    }
+
+    // -------------------------------------------------------
+    // MOVIES
+    // -------------------------------------------------------
+
+    public function movie(int|string $id, array $query = []): array
+    {
+        return $this->get("/movie/{$id}", $query);
     }
 
     public function movieCredits(int|string $id, array $query = []): array
@@ -123,62 +137,52 @@ class TmdbClient
     // TV
     // -------------------------------------------------------
 
-    public function searchTvShows(array $query = []): array
-    {
-        return $this->get('/search/tv', $query);
-    }
-
-    public function tvShow(int|string $id, array $query = []): array
+    public function tv(int|string $id, array $query = []): array
     {
         return $this->get("/tv/{$id}", $query);
     }
 
-    public function tvShowWatchlist(array $query = []): array
-    {
-        return $this->getV4("/account/{$this->accountId}/watchlist/tv", $query);
-    }
-
-    public function tvShowCredits(int|string $id, array $query = []): array
+    public function tvCredits(int|string $id, array $query = []): array
     {
         return $this->get("/tv/{$id}/aggregate_credits", $query);
     }
 
-    public function tvShowImages(int|string $id, array $query = []): array
+    public function tvImages(int|string $id, array $query = []): array
     {
         return $this->get("/tv/{$id}/images", $query);
     }
 
-    public function tvShowVideos(int|string $id, array $query = []): array
+    public function tvVideos(int|string $id, array $query = []): array
     {
         return $this->get("/tv/{$id}/videos", $query);
     }
 
-    public function tvShowRecommendations(int|string $id, array $query = []): array
+    public function tvRecommendations(int|string $id, array $query = []): array
     {
         return $this->get("/tv/{$id}/recommendations", $query);
     }
 
-    public function similarTvShows(int|string $id, array $query = []): array
+    public function similarTv(int|string $id, array $query = []): array
     {
         return $this->get("/tv/{$id}/similar", $query);
     }
 
-    public function airingTodayTvShows(array $query = []): array
+    public function airingTodayTv(array $query = []): array
     {
         return $this->get("/tv/airing_today", $query);
     }
 
-    public function onTheAirTvShows(array $query = []): array
+    public function onTheAirTv(array $query = []): array
     {
         return $this->get("/tv/on_the_air", $query);
     }
 
-    public function popularTvShows(array $query = []): array
+    public function popularTv(array $query = []): array
     {
         return $this->get("/tv/popular", $query);
     }
 
-    public function topRatedTvShows(array $query = []): array
+    public function topRatedTv(array $query = []): array
     {
         return $this->get("/tv/top_rated", $query);
     }
