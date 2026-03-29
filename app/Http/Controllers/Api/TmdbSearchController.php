@@ -31,7 +31,7 @@ class TmdbSearchController extends Controller
 
         $result = $this->client->searchAllTitles($query);
 
-        return $this->handleTmdb(fn() => $result, 'No title results found.');
+        return $this->handleTmdb(fn() => $result, 'No results found for movies or TV shows matching your query.');
     }
 
     public function movie(SearchRequest $request): JsonResponse
@@ -56,7 +56,7 @@ class TmdbSearchController extends Controller
 
         $result = $this->client->searchMovies($query);
 
-        return $this->handleTmdb(fn() => $result, 'No movie results found.');
+        return $this->handleTmdb(fn() => $result, 'No results found for movies matching your query.');
     }
 
     public function tv(SearchRequest $request): JsonResponse
@@ -79,7 +79,7 @@ class TmdbSearchController extends Controller
 
         $result = $this->client->searchTv($query);
 
-        return $this->handleTmdb(fn() => $result, 'No tv results found.');
+        return $this->handleTmdb(fn() => $result, 'No results found for TV shows matching your query.');
     }
 
     public function person(SearchRequest $request): JsonResponse
@@ -98,7 +98,7 @@ class TmdbSearchController extends Controller
 
         $result = $this->client->searchPeople($query);
 
-        return $this->handleTmdb(fn() => $result, 'No person results found.');
+        return $this->handleTmdb(fn() => $result, 'No people found matching your query.');
     }
 
     public function collection(SearchRequest $request): JsonResponse
@@ -119,7 +119,7 @@ class TmdbSearchController extends Controller
 
         $result = $this->client->searchCollections($query);
 
-        return $this->handleTmdb(fn() => $result, 'No collection results found.');
+        return $this->handleTmdb(fn() => $result, 'No collections found matching your query.');
     }
 
     public function company(SearchRequest $request): JsonResponse
@@ -128,7 +128,7 @@ class TmdbSearchController extends Controller
 
         $result = $this->client->searchCompanies($query);
 
-        return $this->handleTmdb(fn() => $result, 'No company results found.');
+        return $this->handleTmdb(fn() => $result, 'No companies found matching your query.');
     }
 
     public function keyword(SearchRequest $request): JsonResponse
@@ -137,6 +137,6 @@ class TmdbSearchController extends Controller
 
         $result = $this->client->searchKeywords($query);
 
-        return $this->handleTmdb(fn() => $result, 'No keyword results found.');
+        return $this->handleTmdb(fn() => $result, 'No keywords found matching your query.');
     }
 }
