@@ -6,12 +6,12 @@ use App\Http\Controllers\Concerns\HandlesTmdb;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Search\SearchRequest;
 use App\Services\TmdbClient;
-use App\Support\Concerns\QueryParam;
+use App\Support\Concerns\BuildsQuery;
 use Illuminate\Http\JsonResponse;
 
 class TmdbSearchController extends Controller
 {
-    use HandlesTmdb, QueryParam;
+    use HandlesTmdb, BuildsQuery;
 
     public function __construct(protected TmdbClient $client) {}
 

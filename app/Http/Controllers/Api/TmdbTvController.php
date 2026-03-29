@@ -7,13 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Title\TitleListsRequest;
 use App\Http\Requests\Tv\TvRequest;
 use App\Services\TmdbClient;
-use App\Support\Concerns\QueryParam;
+use App\Support\Concerns\BuildsQuery;
 use App\Support\TmdbAppend;
 use Illuminate\Http\JsonResponse;
 
 class TmdbTvController extends Controller
 {
-    use HandlesTmdb, QueryParam;
+    use HandlesTmdb, BuildsQuery;
 
     public function __construct(protected TmdbClient $client) {}
 
@@ -75,7 +75,7 @@ class TmdbTvController extends Controller
                 ],
             ],
             [
-                'append_to_response.regex' => 'Invalid format. Use comma-separated values. Supported values: ' . implode(', ', TmdbAppend::movie()) . '.',
+                'append_to_response.regex' => 'Invalid format. Use comma-separated values. Supported values: ' . implode(', ', TmdbAppend::tv()) . '.',
             ]
         );
 

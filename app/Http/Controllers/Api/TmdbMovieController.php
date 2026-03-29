@@ -7,13 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Movie\MovieRequest;
 use App\Http\Requests\Title\TitleListsRequest;
 use App\Services\TmdbClient;
-use App\Support\Concerns\QueryParam;
+use App\Support\Concerns\BuildsQuery;
 use App\Support\TmdbAppend;
 use Illuminate\Http\JsonResponse;
 
 class TmdbMovieController extends Controller
 {
-    use HandlesTmdb, QueryParam;
+    use HandlesTmdb, BuildsQuery;
 
     public function __construct(protected TmdbClient $client) {}
 
