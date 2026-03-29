@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\TmdbMovieController;
 use App\Http\Controllers\Api\TmdbSearchController;
+use App\Http\Controllers\Api\TmdbTvController;
 use App\Http\Controllers\Api\TmdbWatchlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,14 +30,23 @@ Route::prefix('/api')->middleware(['ajax', 'auth'])->group(function () {
 
     Route::get('/{movie_id}', [TmdbMovieController::class, 'show'])->name('api.movie.show');
     Route::get('/{movie_id}/credits', [TmdbMovieController::class, 'credits'])->name('api.movie.credits');
-    Route::get('/{movie_id}/images', [TmdbMovieController::class, 'credits'])->name('api.movie.images');
-    Route::get('/{movie_id}/videos', [TmdbMovieController::class, 'credits'])->name('api.movie.videos');
-    Route::get('/{movie_id}/keywords', [TmdbMovieController::class, 'credits'])->name('api.movie.keywords');
-    Route::get('/{movie_id}/recommendations', [TmdbMovieController::class, 'credits'])->name('api.movie.recommendations');
-    Route::get('/{movie_id}/similar', [TmdbMovieController::class, 'credits'])->name('api.movie.similar');
+    Route::get('/{movie_id}/images', [TmdbMovieController::class, 'images'])->name('api.movie.images');
+    Route::get('/{movie_id}/videos', [TmdbMovieController::class, 'videos'])->name('api.movie.videos');
+    Route::get('/{movie_id}/recommendations', [TmdbMovieController::class, 'recommendations'])->name('api.movie.recommendations');
+    Route::get('/{movie_id}/similar', [TmdbMovieController::class, 'similar'])->name('api.movie.similar');
   });
 
   Route::prefix('/tv')->group(function () {
-    // TODO: static & dynamic tv routes
+    Route::get('/airing_today', [TmdbTvController::class, 'airingToday'])->name('api.tv.airing_today');
+    Route::get('/on_the_air', [TmdbTvController::class, 'onTheAir'])->name('api.tv.on_the_air');
+    Route::get('/popular', [TmdbTvController::class, 'popular'])->name('api.tv.popular');
+    Route::get('/top_rated', [TmdbTvController::class, 'topRated'])->name('api.tv.top_rated');
+
+    Route::get('/{tv_id}', [TmdbTvController::class, 'show'])->name('api.tv.show');
+    Route::get('/{tv_id}/credits', [TmdbTvController::class, 'credits'])->name('api.tv.credits');
+    Route::get('/{tv_id}/images', [TmdbTvController::class, 'images'])->name('api.tv.images');
+    Route::get('/{tv_id}/videos', [TmdbTvController::class, 'videos'])->name('api.tv.videos');
+    Route::get('/{tv_id}/recommendations', [TmdbTvController::class, 'recommendations'])->name('api.tv.recommendations');
+    Route::get('/{tv_id}/similar', [TmdbTvController::class, 'similar'])->name('api.tv.similar');
   });
 });
