@@ -79,6 +79,11 @@ class TmdbClient
         return $this->getV4("/account/{$this->accountId}/watchlist/tv", $query);
     }
 
+    public function toggleWatchlist(array $query = []): array
+    {
+        return $this->post("/account/{$this->accountId}/watchlist", $query);
+    }
+
     // -------------------------------------------------------
     // MOVIES
     // -------------------------------------------------------
