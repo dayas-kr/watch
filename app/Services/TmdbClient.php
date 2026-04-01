@@ -85,6 +85,30 @@ class TmdbClient
     }
 
     // -------------------------------------------------------
+    // TRENDING
+    // -------------------------------------------------------
+
+    public function trendingTitles(string $timeWindow, array $query = []): array
+    {
+        return $this->get("/trending/all/{$timeWindow}", $query);
+    }
+
+    public function trendingMovies(string $timeWindow, array $query = []): array
+    {
+        return $this->get("/trending/movie/{$timeWindow}", $query);
+    }
+
+    public function trendingTv(string $timeWindow, array $query = []): array
+    {
+        return $this->get("/trending/tv/{$timeWindow}", $query);
+    }
+
+    public function trendingPeople(string $timeWindow, array $query = []): array
+    {
+        return $this->get("/trending/person/{$timeWindow}", $query);
+    }
+
+    // -------------------------------------------------------
     // MOVIES
     // -------------------------------------------------------
 

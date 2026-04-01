@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\TmdbMovieController;
 use App\Http\Controllers\Api\TmdbSearchController;
+use App\Http\Controllers\Api\TmdbTrendingController;
 use App\Http\Controllers\Api\TmdbTvController;
 use App\Http\Controllers\Api\TmdbWatchlistController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,13 @@ Route::prefix('/api')->group(function () {
     Route::get('/collection', [TmdbSearchController::class, 'collection'])->name('api.search.collection');
     Route::get('/company', [TmdbSearchController::class, 'company'])->name('api.search.company');
     Route::get('/keyword', [TmdbSearchController::class, 'keyword'])->name('api.search.keyword');
+  });
+
+  Route::prefix('/trending')->group(function () {
+    Route::get('/all/{time_window}', [TmdbTrendingController::class, 'all'])->name('api.trending.all');
+    Route::get('/movie/{time_window}', [TmdbTrendingController::class, 'movie'])->name('api.trending.movie');
+    Route::get('/tv/{time_window}', [TmdbTrendingController::class, 'tv'])->name('api.trending.tv');
+    Route::get('/person/{time_window}', [TmdbTrendingController::class, 'person'])->name('api.trending.person');
   });
 
   Route::prefix('/watchlist')->group(function () {
