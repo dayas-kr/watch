@@ -1,4 +1,5 @@
-<div x-data="search" class="relative">
+<div x-data="search" class="relative" @keydown.meta.k.window.prevent="$refs.searchInput.focus()"
+    @keydown.ctrl.k.window.prevent="$refs.searchInput.focus()">
     <div class="grid grid-cols-[auto_1fr_auto] items-center gap-2 h-9 border border-(--border) rounded-xl">
         <button @click="toggleSourcesDialog" x-ref="sourcesButton"
             class="border-r border-(--border) h-full px-3 flex items-center text-sm font-medium cursor-pointer select-none">
@@ -83,7 +84,7 @@
                             </template>
                             <template x-if="item.media_type === 'person' && !avatarUrl(item.profile_path)">
                                 <div class="w-full h-full flex items-center justify-center">
-                                    <i class="fa-regular fa-user text-2xl text-(--muted-foreground)/25"></i>
+                                    <i class="fa-solid fa-user text-2xl text-(--muted-foreground)/25"></i>
                                 </div>
                             </template>
 
@@ -172,7 +173,7 @@
                             </template>
                             <template x-if="!avatarUrl(item.profile_path)">
                                 <div class="w-full h-full flex items-center justify-center">
-                                    <i class="fa-regular fa-user text-2xl text-(--muted-foreground)/25"></i>
+                                    <i class="fa-solid fa-user text-2xl text-(--muted-foreground)/25"></i>
                                 </div>
                             </template>
                         </div>
