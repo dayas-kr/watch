@@ -43,7 +43,6 @@
     <!-- Results Dropdown -->
     <div x-show="open"
         class="absolute top-10 max-h-[calc(100vh-3.5rem)] w-full rounded-xl z-50 bg-(--popover) border border-(--border) shadow overflow-hidden flex flex-col">
-
         <!-- Loading indicator -->
         <div x-show="loading" class="py-12 flex items-center justify-center">
             <div class="flex items-center gap-2">
@@ -65,16 +64,14 @@
         </div>
 
         <div class="flex flex-col divide-y divide-(--border) overflow-y-auto no-scrollbar">
-
             {{-- ── Multi cards (movie + tv + person mixed) ─────────────────────── --}}
             <template x-if="!loading && activeResultType === 'multi'">
                 <template x-for="(item, index) in results" :key="item.id">
-                    <a :href="itemHref(item)" :data-active="index === selectedIndex"
-                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
-
+                    <a :href="itemHref(item)" @mouseenter="selectedIndex = index"
+                        :data-multi-card="index === selectedIndex" :data-active="index === selectedIndex"
+                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <!-- Thumbnail -->
                         <div class="aspect-2/3 bg-(--border) w-14 rounded-sm relative overflow-hidden shrink-0">
-
                             {{-- Person branch --}}
                             <template x-if="item.media_type === 'person'">
                                 <template x-if="avatarUrl(item.profile_path)">
@@ -98,13 +95,11 @@
                                     <i class="fa-regular fa-image text-2xl text-(--muted-foreground)/25"></i>
                                 </div>
                             </template>
-
                         </div>
 
                         <!-- Meta -->
                         <div class="flex-1 flex flex-col gap-1 min-w-0 pointer-events-none">
                             <div x-text="item.title || item.name" class="font-medium truncate"></div>
-
                             {{-- Person: department + known-for title --}}
                             <template x-if="item.media_type === 'person'">
                                 <div class="flex flex-col gap-0.5">
@@ -128,7 +123,6 @@
                         <span
                             class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full border border-(--border) text-(--muted-foreground) pointer-events-none"
                             x-text="mediaTypeLabel(item)"></span>
-
                     </a>
                 </template>
             </template>
@@ -137,6 +131,7 @@
             <template x-if="!loading && activeResultType === 'title'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
+                        :data-movie-card="index === selectedIndex" :data-tv-card="index === selectedIndex"
                         class="flex items-center gap-2 shrink-0 px-2 py-1.75 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <!-- Poster -->
                         <div class="aspect-2/3 bg-(--border) w-14 rounded-sm relative overflow-hidden shrink-0">
@@ -164,6 +159,7 @@
             <template x-if="!loading && activeResultType === 'person'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
+                        :data-person-card="index === selectedIndex"
                         class="flex items-center gap-2 shrink-0 px-2 py-1.75 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <!-- Profile photo -->
                         <div class="aspect-2/3 bg-(--border) w-14 rounded-sm relative overflow-hidden shrink-0">
@@ -193,6 +189,7 @@
             <template x-if="!loading && activeResultType === 'collection'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
+                        :data-collection-card="index === selectedIndex"
                         class="flex items-center gap-2 shrink-0 px-2 py-1.75 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <div class="aspect-2/3 bg-(--border) w-14 rounded-sm relative overflow-hidden shrink-0">
                             <template x-if="item.poster_path">
@@ -223,6 +220,7 @@
             <template x-if="!loading && activeResultType === 'company'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
+                        :data-company-card="index === selectedIndex"
                         class="flex items-center gap-3 shrink-0 px-3 py-2 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <div
                             class="w-14 h-10 rounded-md bg-white flex items-center justify-center p-1.5 shrink-0 border border-(--border)">
@@ -261,7 +259,6 @@
                     </template>
                 </div>
             </template>
-
         </div>
 
         <!-- "See all" footer -->

@@ -268,5 +268,16 @@ export default function registerComponents(Alpine) {
                     return item.media_type ?? "—";
             }
         },
+
+        init() {
+            this.$watch("selectedIndex", (value) => {
+                const cardType = this.source;
+                const card = this.$root.querySelector(
+                    `[data-${cardType}-card="true"]`,
+                );
+
+                card?.scrollIntoView({ block: "nearest" });
+            });
+        },
     }));
 }
