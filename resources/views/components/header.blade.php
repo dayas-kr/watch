@@ -23,10 +23,12 @@
                 class="text-(--muted-foreground)! hover:text-(--foreground)! rounded-xl! h-7.5!">
                 <x-lucide-compass /> Discover
             </x-ui.button>
-            <x-ui.button href="#" variant="ghost"
-                class="text-(--muted-foreground)! hover:text-(--foreground)! rounded-xl! h-7.5!">
-                <x-lucide-bookmark-plus /> Watchlist
-            </x-ui.button>
+            <a href="{{ route('watchlist.index') }}" class="contents">
+                <x-ui.button variant="ghost"
+                    class="text-(--muted-foreground)! hover:text-(--foreground)! rounded-xl! h-7.5!">
+                    <x-lucide-bookmark-plus /> Watchlist
+                </x-ui.button>
+            </a>
         </nav>
     </div>
 </header>

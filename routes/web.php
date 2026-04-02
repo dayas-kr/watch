@@ -17,6 +17,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/watchlist', function () {
+    return view('watchlist.index');
+})->name('watchlist.index');
+
 require __DIR__ . '/auth.php';
 
 require __DIR__ . '/ajax.php';
