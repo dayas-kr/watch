@@ -1,24 +1,25 @@
 import Alpine from "alpinejs";
 import $ from "jquery";
+import numeral from "numeral";
 
 Alpine.data("watchlist", () => ({
     source: "movie",
+    sources: { movie: "Movies", tv: "TV Shows" },
 
-    sources: {
-        movie: "Movies",
-        tv: "TV Shows",
-    },
+    gridView: Alpine.$persist(true).as("watchlist-view-preference"),
 
     MAX_RETRIES: 3,
     RETRY_DELAY_MS: 1000,
 
     filterBy: {
-        open: false,
+        open: Alpine.$persist(false).as("watchlist-filter-preference"),
         value: "added",
         options: {
             added: "Date Added",
             popularity: "Popularity",
             release_date: "Release Date",
+            vote_average: "User Rating",
+            vote_count: "Number of ratings",
         },
     },
 
@@ -145,6 +146,20 @@ Alpine.data("watchlist", () => ({
                           a.release_date || "",
                       ),
                   );
+        }
+
+        // User Rating
+        if (this.filterBy.value === "vote_average") {
+            return this[type].orderByCreatedAsc
+                ? [...items].sort((a, b) => a.vote_average - b.vote_average)
+                : [...items].sort((a, b) => b.vote_average - a.vote_average);
+        }
+
+        // Number of Ratings
+        if (this.filterBy.value === "vote_count") {
+            return this[type].orderByCreatedAsc
+                ? [...items].sort((a, b) => a.vote_count - b.vote_count)
+                : [...items].sort((a, b) => b.vote_count - a.vote_count);
         }
 
         // Default (Date Added from API)
@@ -295,5 +310,9 @@ Alpine.data("watchlist", () => ({
     // Helpers
     formatDate(date) {
         return dayjs(date).format("YYYY");
+    },
+
+    formatNumeral(num) {
+        return numeral(num).format("0a");
     },
 }));
