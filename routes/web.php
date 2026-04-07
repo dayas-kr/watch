@@ -20,6 +20,9 @@ Route::middleware('auth')->group(function () {
 Route::get('/watchlist', function () {
     return view('watchlist.index');
 })->name('watchlist.index');
+Route::get('/movie/{movie_id}', function ($movie_id) {
+    return view('movie.show', compact('movie_id'));
+})->name('movie.show');
 
 require __DIR__ . '/auth.php';
 

@@ -9,6 +9,7 @@ export default defineConfig({
                 "resources/js/app.js",
                 "resources/js/pages/welcome.js",
                 "resources/js/pages/watchlist.js",
+                "resources/js/pages/movie.js",
             ],
             refresh: true,
         }),
