@@ -280,4 +280,21 @@ export default function registerComponents(Alpine) {
             });
         },
     }));
+
+    Alpine.data("telegram", () => ({
+        share() {
+            window.location =
+                "tg://msg_url?url=" +
+                encodeURIComponent(this.$el.dataset.title);
+            setTimeout(
+                () =>
+                    window.open(
+                        "https://t.me/share/url?url=" +
+                            encodeURIComponent(this.$el.dataset.title),
+                        "_blank",
+                    ),
+                500,
+            );
+        },
+    }));
 }
