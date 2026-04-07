@@ -5,12 +5,12 @@ import numeral from "numeral";
 import recommendations from "./titles/recommendations";
 import similar from "./titles/similar";
 
-Alpine.store("title", { id: null, media_type: null });
+Alpine.store("title", { id: null });
 
 Alpine.data("recommendations", recommendations);
 Alpine.data("similar", similar);
 
-Alpine.data("movie", (id) => ({
+Alpine.data("tv", (id) => ({
     title: {},
 
     MAX_RETRIES: 3,
@@ -25,7 +25,7 @@ Alpine.data("movie", (id) => ({
 
     initialSetup(id) {
         Alpine.store("title").id = Number(id);
-        Alpine.store("title").media_type = "movie";
+        Alpine.store("title").media_type = "tv";
     },
 
     // Title
@@ -42,7 +42,7 @@ Alpine.data("movie", (id) => ({
         }
 
         $.ajax({
-            url: `/api/movie/${id}`,
+            url: `/api/tv/${id}`,
             method: "GET",
             data: { append_to_response: "credits" },
             success: (res) => {
@@ -87,6 +87,6 @@ Alpine.data("movie", (id) => ({
     },
 
     handleError(message) {
-        console.error("Error in Movie:", message);
+        console.error("Error in TV show:", message);
     },
 }));
