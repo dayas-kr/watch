@@ -5,7 +5,7 @@ import numeral from "numeral";
 import recommendations from "./titles/recommendations";
 import similar from "./titles/similar";
 
-Alpine.store("movie", { id: null });
+Alpine.store("title", { id: null, media_type: null });
 
 Alpine.data("recommendations", recommendations);
 Alpine.data("similar", similar);
@@ -21,6 +21,11 @@ Alpine.data("movie", (id) => ({
 
     init() {
         this.fetchTitle();
+    },
+
+    initialSetup(id) {
+        Alpine.store("title").id = Number(id);
+        Alpine.store("title").media_type = "movie";
     },
 
     // Title

@@ -1,6 +1,4 @@
-@props(['media_type'])
-
-<div x-data="recommendations(Number($store.movie.id), @js($media_type))" x-intersect.once="fetch">
+<div x-data="recommendations($store.title.id, $store.title.media_type)" x-intersect.once="fetch" {{ $attributes }}>
     <!-- Loading -->
     <template x-if="loading && !error">
         <div class="flex gap-4 overflow-x-auto no-scrollbar">
@@ -25,7 +23,8 @@
     <template x-if="!loading && !error && results.length">
         <x-ui.horizontal-slider>
             <template x-for="title in results" :key="title.id">
-                <a :href="`/${media_type}/${title.id}`" class="shrink-0 flex flex-col space-y-2 w-46 group/card">
+                <a :href="`/${$store.title.media_type}/${title.id}`"
+                    class="shrink-0 flex flex-col space-y-2 w-46 group/card">
                     <!-- Poster -->
                     <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
                         <template x-if="title.poster_path">

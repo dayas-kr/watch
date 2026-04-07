@@ -1,5 +1,5 @@
 <x-base-layout>
-    <div x-data="movie({{ $movie_id }})" x-init="$store.movie.id = @js($movie_id)" class="flex flex-col min-h-screen font-body">
+    <div x-data="movie({{ $movie_id }})" x-init="initialSetup(@js($movie_id))" class="flex flex-col min-h-screen font-body">
         <x-header />
         <main class="flex-1">
             <!-- Loading -->
@@ -397,7 +397,7 @@
                             Recommendations
                         </h2>
 
-                        <x-titles.recommendations media_type="movie" />
+                        <x-titles.recommendations />
                     </div>
 
                     <div class="space-y-6 col-span-full">
@@ -405,7 +405,7 @@
                             Similar
                         </h2>
 
-                        <x-titles.similar media_type="movie" />
+                        <x-titles.similar />
                     </div>
                 </div>
             </div>
