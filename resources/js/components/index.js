@@ -302,6 +302,35 @@ export default function registerComponents(Alpine) {
         watchlist: [],
         favorites: [],
         watched: [],
+
+        route: null,
+
+        init() {
+            this.route = this.setRoute();
+            console.log("route:", this.route);
+        },
+
+        setRoute() {
+            const pathname = new URL(window.location.href).pathname;
+
+            const staticRoutes = {
+                "/": "home",
+                "/watchlist": "watchlist",
+            };
+
+            if (staticRoutes[pathname]) {
+                return staticRoutes[pathname];
+            }
+
+            const match = pathname.match(/^\/(movie|tv)\/(\d+)/);
+
+            if (match) {
+                const [, type] = match;
+                return `${type}.show`;
+            }
+
+            return "unknown";
+        },
     });
 
     Alpine.data("titleCard", (title) => ({
