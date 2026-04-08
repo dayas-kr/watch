@@ -32,7 +32,7 @@ Alpine.data("watchlist", () => ({
         totalPages: 1,
         initialized: false,
         softDeleteItems: [],
-        orderByCreatedAsc: Alpine.$persist(true).as("watchlist-movie-order"),
+        orderByCreatedAsc: Alpine.$persist(false).as("movie-sort-preference"), // ← renamed
     },
 
     tv: {
@@ -44,7 +44,7 @@ Alpine.data("watchlist", () => ({
         totalPages: 1,
         initialized: false,
         softDeleteItems: [],
-        orderByCreatedAsc: Alpine.$persist(true).as("watchlist-tv-order"),
+        orderByCreatedAsc: Alpine.$persist(false).as("tv-sort-preference"), // ← renamed
     },
 
     isSourceActive(type) {
@@ -53,6 +53,21 @@ Alpine.data("watchlist", () => ({
 
     onSourceChange(source) {
         this.source = source;
+    },
+
+    toggleOrderBy() {
+        const type = this.source;
+        this[type].orderByCreatedAsc = !this[type].orderByCreatedAsc;
+
+        if (this.filterBy.value !== "added") return;
+
+        if (!this.hasMore(type)) {
+            this[type].data = [...this[type].data].reverse();
+            return;
+        }
+
+        this.resetList(type);
+        this.fetch(type);
     },
 
     toggleFilterBy() {
@@ -76,21 +91,6 @@ Alpine.data("watchlist", () => ({
         return this.filterBy.options[this.filterBy.value];
     },
 
-    toggleOrderBy() {
-        const type = this.source;
-
-        const isFullyLoaded = this[type].page > this[type].totalPages;
-
-        this[type].orderByCreatedAsc = !this[type].orderByCreatedAsc;
-
-        if (this.filterBy.value !== "added") return;
-
-        if (isFullyLoaded) return;
-
-        this.resetList(type);
-        this.fetch(type);
-    },
-
     resetList(type) {
         this[type].loading = false;
         this[type].error = false;
@@ -107,6 +107,10 @@ Alpine.data("watchlist", () => ({
         const items = this[type].data.filter(
             (item) => !this[type].softDeleteItems.includes(item.id),
         );
+
+        if (this.filterBy.value === "added") {
+            return items;
+        }
 
         if (this.filterBy.value === "popularity") {
             return this[type].orderByCreatedAsc
@@ -140,7 +144,7 @@ Alpine.data("watchlist", () => ({
                 : [...items].sort((a, b) => b.vote_count - a.vote_count);
         }
 
-        return this[type].orderByCreatedAsc ? items : [...items].reverse();
+        return items;
     },
 
     init() {
@@ -234,21 +238,17 @@ Alpine.data("watchlist", () => ({
 
     softDelete(event) {
         const { media_id, media_type } = event.detail;
-
         if (!media_id || !["movie", "tv"].includes(media_type)) {
             return this.handleError("Invalid event data");
         }
-
         this[media_type].softDeleteItems.push(media_id);
     },
 
     rollbackDelete(event) {
         const { media_id, media_type } = event.detail;
-
         if (!media_id || !["movie", "tv"].includes(media_type)) {
             return this.handleError("Invalid event data");
         }
-
         this[media_type].softDeleteItems = this[
             media_type
         ].softDeleteItems.filter((id) => id !== media_id);
@@ -256,15 +256,12 @@ Alpine.data("watchlist", () => ({
 
     delete(event) {
         const { media_id, media_type } = event.detail;
-
         if (!media_id || !["movie", "tv"].includes(media_type)) {
             return this.handleError("Invalid event data");
         }
-
         this[media_type].data = this[media_type].data.filter(
             (item) => item.id !== media_id,
         );
-
         this[media_type].softDeleteItems = this[
             media_type
         ].softDeleteItems.filter((id) => id !== media_id);

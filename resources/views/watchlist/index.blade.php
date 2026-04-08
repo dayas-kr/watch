@@ -73,7 +73,7 @@
                 <template x-for="(value, key) in sources" :key="key">
                     <template x-if="isSourceActive(key)">
                         <div>
-                            <div x-show="gridView"
+                            <div x-show="gridView" data-view="grid"
                                 class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 md:gap-8 gap-y-8">
                                 <template x-for="title in getItems(key)" :key="title.id">
                                     <div class="shrink-0 flex flex-col space-y-2 group/card">
