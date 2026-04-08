@@ -1,8 +1,9 @@
 <div {{ $attributes->merge(['class' => 'flex flex-col gap-3']) }}>
     <button
+        @click="$dispatch(`watchlist:${inWatchlist ? 'remove' : 'add'}`, { media_id: $store.title.id, media_type: $store.title.media_type })"
         class="bg-(--primary) text-(--primary-foreground) border-(--primary) shadow-[inset_0_1px_0_oklch(1_0_0/20%),inset_0_-1px_0_oklch(0_0_0/15%)] hover:opacity-90 focus:opacity-90 flex items-center justify-center gap-2 border px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 outline-none select-none cursor-pointer active:not-aria-[haspopup]:translate-y-px w-full">
-        <x-lucide-bookmark class="size-4" stroke-width="2" />
-        <span>Add to Watchlist</span>
+        <i class="fa-bookmark" :class="inWatchlist ? 'fa-solid' : 'fa-regular'"></i>
+        <span x-text="inWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'"></span>
     </button>
 
     <div class="flex gap-2 text-sm pt-1">

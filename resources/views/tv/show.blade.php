@@ -1,5 +1,6 @@
 <x-base-layout>
-    <div x-data="tv(@js($data))" class="flex flex-col min-h-screen font-body">
+    <div x-data="tv(@js($data))" @sync:watchlist.window="syncWatchlist($event.detail)"
+        class="flex flex-col min-h-screen font-body">
         <x-header />
         <main class="flex-1">
             <!-- Loading -->
@@ -321,6 +322,8 @@
         </main>
         <x-footer />
     </div>
+
+    <x-titles.watchlist-manager />
 
     @push('head')
         @vite('resources/js/pages/tv.js')

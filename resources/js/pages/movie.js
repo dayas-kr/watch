@@ -91,6 +91,10 @@ Alpine.data("movie", (data) => ({
         }
     },
 
+    syncWatchlist(watchlist) {
+        this.inWatchlist = watchlist;
+    },
+
     formatNumeral(num) {
         return numeral(num).format("0a");
     },

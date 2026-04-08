@@ -297,4 +297,149 @@ export default function registerComponents(Alpine) {
             );
         },
     }));
+
+    Alpine.store("watchlist", {
+        items: new Set(),
+
+        key(media_id, media_type, action) {
+            return `${media_id}-${media_type}-${action}`;
+        },
+
+        has(media_id, media_type, action) {
+            return this.items.has(this.key(media_id, media_type, action));
+        },
+
+        add(media_id, media_type) {
+            this.items.delete(this.key(media_id, media_type, "removed"));
+            this.items.add(this.key(media_id, media_type, "added"));
+        },
+
+        remove(media_id, media_type) {
+            this.items.delete(this.key(media_id, media_type, "added"));
+            this.items.add(this.key(media_id, media_type, "removed"));
+        },
+    });
+
+    Alpine.data("watchlistManager", () => ({
+        loading: false,
+        error: false,
+
+        add(event) {
+            if (!this.validateEventdata(event)) return;
+
+            const { media_id, media_type } = event.detail;
+            const store = Alpine.store("watchlist");
+
+            if (store.has(media_id, media_type, "added")) {
+                return this.handleError("Already tracked as added");
+            }
+
+            store.add(media_id, media_type);
+            this.update(event, 1);
+        },
+
+        remove(event) {
+            if (!this.validateEventdata(event)) return;
+
+            const { media_id, media_type } = event.detail;
+            const store = Alpine.store("watchlist");
+
+            if (store.has(media_id, media_type, "removed")) {
+                return this.handleError("Already tracked as removed");
+            }
+
+            store.remove(media_id, media_type);
+            this.update(event, 0);
+        },
+
+        update(event, watchlist) {
+            const { media_id, media_type } = event.detail;
+            const store = Alpine.store("watchlist");
+
+            this.loading = true;
+            this.error = false;
+
+            if (Alpine.store("title").id === media_id) {
+                this.$dispatch("sync:watchlist", watchlist);
+            }
+
+            $.ajax({
+                url: "/api/watchlist",
+                method: "POST",
+                data: { media_id, media_type, watchlist },
+                success: (res) => {
+                    if (!res.success) {
+                        this.loading = false;
+                        this.error = true;
+                        return this.handleError("Request unsuccessful", {
+                            media_id,
+                            media_type,
+                        });
+                    }
+
+                    $.ajax({
+                        url: "/api/watchlist/sync_title",
+                        method: "POST",
+                        data: { media_id, media_type, watchlist },
+                        success: (syncRes) => {
+                            this.loading = false;
+
+                            if (syncRes.success) {
+                                console.log(`[Watchlist] Synced`, {
+                                    media_id,
+                                    media_type,
+                                });
+                                return;
+                            }
+
+                            console.warn(`[Watchlist] Sync failed`, {
+                                media_id,
+                                media_type,
+                            });
+                        },
+                        error: () => {
+                            this.loading = false;
+                            console.warn(`[Watchlist] Sync request failed`, {
+                                media_id,
+                                media_type,
+                            });
+                        },
+                    });
+                },
+                error: () => {
+                    // rollback immediately (no retries)
+                    if (Alpine.store("title").id === media_id) {
+                        this.$dispatch("sync:watchlist", !watchlist);
+                    }
+
+                    watchlist === 1
+                        ? store.remove(media_id, media_type)
+                        : store.add(media_id, media_type);
+
+                    this.loading = false;
+                    this.error = true;
+
+                    console.error(`[Watchlist] Request failed, rolled back`, {
+                        media_id,
+                        media_type,
+                    });
+                },
+            });
+        },
+
+        validateEventdata(event) {
+            const { media_id, media_type } = event.detail;
+
+            if (!media_id || !["movie", "tv"].includes(media_type)) {
+                return this.handleError("Invalid event data");
+            }
+
+            return true;
+        },
+
+        handleError(message, context = {}) {
+            console.error("[Watchlist] Error:", message, context);
+            return false;
+        },
+    }));
 }
