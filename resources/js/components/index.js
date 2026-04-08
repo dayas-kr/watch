@@ -17,7 +17,7 @@ export default function registerComponents(Alpine) {
         //   "collection" → collection  (poster + name + backdrop hint)
         //   "company"    → company     (logo on white pill + name + country)
         //   "keyword"    → keyword     (tag chip — name only, no image)
-        source: "multi",
+        source: Alpine.$persist("multi").as("search-source-preference"),
         sourcesDialogOpen: false,
         sources: [
             {
