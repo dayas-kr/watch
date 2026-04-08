@@ -353,13 +353,13 @@ export default function registerComponents(Alpine) {
         },
 
         update(event, watchlist) {
-            const { media_id, media_type } = event.detail;
+            const { media_id, media_type, page = null } = event.detail;
             const store = Alpine.store("watchlist");
 
             this.loading = true;
             this.error = false;
 
-            if (Alpine.store("title").id === media_id) {
+            if (["movie", "tv"].includes(page)) {
                 this.$dispatch("sync:watchlist", watchlist);
             }
 
@@ -407,8 +407,7 @@ export default function registerComponents(Alpine) {
                     });
                 },
                 error: () => {
-                    // rollback immediately (no retries)
-                    if (Alpine.store("title").id === media_id) {
+                    if (["movie", "tv"].includes(page)) {
                         this.$dispatch("sync:watchlist", !watchlist);
                     }
 
