@@ -11,21 +11,20 @@ class WelcomeController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $watchlist = UserList::defaultOfType(Auth::id(), ListType::WATCHLIST)
-            ->items()
-            ->with('mediaType')
-            ->pluck('media_id');
-
-        $favorites = UserList::defaultOfType(Auth::id(), ListType::FAVORITES)
-            ->items()
-            ->with('mediaType')
-            ->pluck('media_id');
-
         $data = [
-            'watchlist' => $watchlist,
-            'favorites' => $favorites
+            'watchlist' => $this->getList(ListType::WATCHLIST),
+            'favorites' => $this->getList(ListType::FAVORITES),
+            'watched' => $this->getList(ListType::WATCHED),
         ];
 
         return view('welcome', compact('data'));
+    }
+
+    private function getList($listType)
+    {
+        return UserList::defaultOfType(Auth::id(), $listType)
+            ->items()
+            ->with('mediaType')
+            ->pluck('media_id');
     }
 }
