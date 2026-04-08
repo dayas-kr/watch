@@ -328,7 +328,10 @@ Alpine.data("popularTabs", () => ({
 
             success: (res) => {
                 if (res?.data?.results) {
-                    this[type].results = res.data.results;
+                    this[type].results = res.data.results.map((item) => ({
+                        ...item,
+                        media_type: type,
+                    }));
                     this[type].loading = false;
                     this[type].initialized = true;
                 } else {
@@ -402,7 +405,10 @@ Alpine.data("topRatedList", () => ({
 
             success: (res) => {
                 if (res?.data?.results) {
-                    this[type].data = res.data.results;
+                    this[type].data = res.data.results.map((item) => ({
+                        ...item,
+                        media_type: type,
+                    }));
                     this[type].loading = false;
                     this[type].initialized = true;
                 } else {
@@ -600,7 +606,10 @@ Alpine.data("watchlistTabs", () => ({
 
             success: (res) => {
                 if (res?.data?.results) {
-                    this[type].results = res.data.results;
+                    this[type].results = res.data.results.map((item) => ({
+                        ...item,
+                        media_type: type,
+                    }));
                     this[type].loading = false;
                     this[type].initialized = true;
                 } else {
