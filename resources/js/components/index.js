@@ -298,6 +298,31 @@ export default function registerComponents(Alpine) {
         },
     }));
 
+    Alpine.store("db", {
+        watchlist: [],
+        favorites: [],
+        watched: [],
+    });
+
+    Alpine.data("titleCard", (title) => ({
+        title,
+        inWatchlist: false,
+
+        init() {
+            const watchlist = Alpine.store("db").watchlist;
+
+            this.inWatchlist = watchlist.includes(title.id);
+        },
+
+        updateWatchlist(event) {
+            const { id, watchlist } = event.detail;
+
+            if (id !== this.title.id) return;
+
+            this.inWatchlist = watchlist;
+        },
+    }));
+
     Alpine.store("watchlist", {
         items: new Set(),
 
@@ -363,6 +388,11 @@ export default function registerComponents(Alpine) {
                 this.$dispatch("sync:watchlist", watchlist);
             }
 
+            this.$dispatch("title-card:sync-watchlist", {
+                id: media_id,
+                watchlist: watchlist,
+            });
+
             $.ajax({
                 url: "/api/watchlist",
                 method: "POST",
@@ -410,6 +440,11 @@ export default function registerComponents(Alpine) {
                     if (["movie", "tv"].includes(page)) {
                         this.$dispatch("sync:watchlist", !watchlist);
                     }
+
+                    this.$dispatch("title-card:sync-watchlist", {
+                        id: media_id,
+                        watchlist: !watchlist,
+                    });
 
                     watchlist === 1
                         ? store.remove(media_id, media_type)

@@ -14,6 +14,7 @@ Alpine.data("movie", (data) => ({
 
     movie_id: null,
     inWatchlist: null,
+    inWatched: null,
 
     loading: true,
     error: false,
@@ -25,6 +26,14 @@ Alpine.data("movie", (data) => ({
         if (!this.initialValidation()) return;
         this.initialSetup();
         this.fetchTitle();
+
+        const { watchlist, favorites, watched } = data;
+
+        const store = Alpine.store("db");
+
+        store.watchlist = watchlist;
+        store.favorites = favorites;
+        store.watched = watched;
     },
 
     initialValidation() {
@@ -38,7 +47,12 @@ Alpine.data("movie", (data) => ({
     },
 
     initialSetup() {
-        const { id, media_type = "movie", inWatchlist = false } = data;
+        const {
+            id,
+            media_type = "movie",
+            inWatchlist = false,
+            inWatched = false,
+        } = data;
 
         this.movie_id = Number(id);
 
@@ -47,6 +61,7 @@ Alpine.data("movie", (data) => ({
         store.media_type = media_type;
 
         this.inWatchlist = inWatchlist;
+        this.inWatched = inWatched;
     },
 
     fetchTitle(attempt = 1) {
@@ -93,6 +108,10 @@ Alpine.data("movie", (data) => ({
 
     syncWatchlist(watchlist) {
         this.inWatchlist = watchlist;
+    },
+
+    syncWatched(watched) {
+        this.inWatched = watched;
     },
 
     formatNumeral(num) {

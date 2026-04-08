@@ -6,13 +6,21 @@
         <span x-text="inWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'"></span>
     </button>
 
+    <x-ui.button
+        @click="$dispatch(`watched:${inWatched ? 'remove' : 'add'}`, { media_id: $store.title.id, media_type: $store.title.media_type })"
+        variant="outline" size="lg" class="rounded-full! cursor-pointer!">
+        <i :class="inWatched ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle-check'"></i>
+        <span x-text="inWatched ? 'Mark as Unwatched' : 'Mark as Watched'"></span>
+    </x-ui.button>
+
     <div class="flex gap-2 text-sm pt-1">
         <a :href="`https://www.imdb.com/title/${title.imdb_id}/reviews`" target="_blank"
             class="text-blue-500 dark:text-blue-400 font-medium hover:underline"
             x-text="`${title.vote_count?.toLocaleString()} User reviews`"></a>
     </div>
 
-    <p x-show="title.tagline" class="text-sm italic text-(--muted-foreground)" x-text="`&ldquo;${title.tagline}&rdquo;`">
+    <p x-show="title.tagline" class="text-sm italic text-(--muted-foreground)"
+        x-text="`&ldquo;${title.tagline}&rdquo;`">
     </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
