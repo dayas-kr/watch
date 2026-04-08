@@ -49,7 +49,6 @@ Alpine.data("movie", (id) => ({
                 if (res.success) {
                     this.title = res.data;
                     this.loading = false;
-                    console.log(res.data);
                 } else {
                     this._retryTitleOrFail(attempt);
                 }
