@@ -88,40 +88,8 @@
                                     x-transition:enter="transition ease-out duration-500"
                                     x-transition:enter-start="opacity-0 translate-y-6"
                                     x-transition:enter-end="opacity-100 translate-y-0">
-                                    <template x-for="(item, index) in $data[key].results" :key="index">
-                                        <a :href="`/${item.media_type || key}/${item.id}`"
-                                            class="shrink-0 flex flex-col space-y-2 w-48 group/card">
-                                            <!-- Poster -->
-                                            <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
-                                                <template x-if="item.poster_path">
-                                                    <img :src="`https://image.tmdb.org/t/p/w300${item.poster_path}`"
-                                                        :alt="item.title || item.name"
-                                                        class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105 z-1">
-                                                </template>
-
-                                                <div class="w-full h-full flex items-center justify-center z-0">
-                                                    <i
-                                                        class="fa-regular fa-image text-5xl text-(--muted-foreground)/25"></i>
-                                                </div>
-                                            </div>
-
-                                            <!-- Info -->
-                                            <div class="space-y-0.5">
-                                                <div x-text="item.title || item.name"
-                                                    class="line-clamp-1 font-medium text-sm group-focus-visible/card:underline underline-offset-2">
-                                                </div>
-
-                                                <div
-                                                    class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
-                                                    <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-                                                    <span x-text="item.vote_average.toFixed(1)"
-                                                        class="font-medium text-(--foreground)"></span>
-                                                    <span>·</span>
-                                                    <span
-                                                        x-text="dayjs(item.release_date || item.first_air_date).format('YYYY')"></span>
-                                                </div>
-                                            </div>
-                                        </a>
+                                    <template x-for="(title, index) in $data[key].results" :key="index">
+                                        <x-titles.title-card />
                                     </template>
                                 </x-ui.horizontal-slider>
                             </template>
@@ -361,44 +329,7 @@
                                     x-transition:enter-start="opacity-0 translate-y-6"
                                     x-transition:enter-end="opacity-100 translate-y-0">
                                     <template x-for="(title, index) in $data[key].results" :key="index">
-                                        <a :href="`/${title.media_type}/${title.id}`"
-                                            class="shrink-0 flex flex-col space-y-2 w-48 focus:outline-none group/card">
-
-                                            <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
-                                                <template x-if="title.poster_path">
-                                                    <img :src="`https://image.tmdb.org/t/p/w300${title.poster_path}`"
-                                                        :alt="title.title"
-                                                        class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105">
-                                                </template>
-
-                                                <template x-if="!title.poster_path">
-                                                    <div class="w-full h-full flex items-center justify-center">
-                                                        <i
-                                                            class="fa-regular fa-image text-5xl text-(--muted-foreground)/25"></i>
-                                                    </div>
-                                                </template>
-                                            </div>
-
-                                            <div class="space-y-0.5">
-                                                <div x-text="title.title || title.name"
-                                                    class="line-clamp-1 font-medium text-sm group-focus-visible/card:underline underline-offset-2">
-                                                </div>
-
-                                                <div
-                                                    class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
-                                                    <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-
-                                                    <span x-text="title.vote_average.toFixed(1)"
-                                                        class="font-medium text-(--foreground)"></span>
-
-                                                    <span>·</span>
-
-                                                    <span
-                                                        x-text="dayjs(title.release_date || title.first_air_date).format('YYYY')"
-                                                        class="font-medium"></span>
-                                                </div>
-                                            </div>
-                                        </a>
+                                        <x-titles.title-card />
                                     </template>
                                 </x-ui.horizontal-slider>
                             </template>
@@ -465,47 +396,8 @@
                                     x-transition:enter="transition ease-out duration-500"
                                     x-transition:enter-start="opacity-0 translate-y-6"
                                     x-transition:enter-end="opacity-100 translate-y-0">
-                                    <template x-for="(item, index) in $data[key].results" :key="index">
-                                        <a :href="`/${item.media_type || key}/${item.id}`"
-                                            class="shrink-0 flex flex-col space-y-2 w-48 group/card">
-
-                                            <!-- Poster -->
-                                            <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
-                                                <template x-if="item.poster_path">
-                                                    <img :src="`https://image.tmdb.org/t/p/w300${item.poster_path}`"
-                                                        :alt="item.title || item.name"
-                                                        class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105">
-                                                </template>
-
-                                                <template x-if="!item.poster_path">
-                                                    <div class="w-full h-full flex items-center justify-center">
-                                                        <i
-                                                            class="fa-regular fa-image text-4xl text-(--muted-foreground)/25"></i>
-                                                    </div>
-                                                </template>
-                                            </div>
-
-                                            <!-- Info -->
-                                            <div class="space-y-0.5">
-                                                <div x-text="item.title || item.name"
-                                                    class="line-clamp-1 font-medium text-sm group-focus-visible/card:underline underline-offset-2">
-                                                </div>
-
-                                                <div
-                                                    class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
-                                                    <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-
-                                                    <span x-text="item.vote_average.toFixed(1)"
-                                                        class="font-medium text-(--foreground)"></span>
-
-                                                    <span>·</span>
-
-                                                    <span
-                                                        x-text="dayjs(item.release_date || item.first_air_date).format('YYYY')"></span>
-                                                </div>
-                                            </div>
-
-                                        </a>
+                                    <template x-for="(title, index) in $data[key].results" :key="index">
+                                        <x-titles.title-card />
                                     </template>
                                 </x-ui.horizontal-slider>
                             </template>
@@ -573,47 +465,8 @@
                                     x-transition:enter="transition ease-out duration-500"
                                     x-transition:enter-start="opacity-0 translate-y-6"
                                     x-transition:enter-end="opacity-100 translate-y-0">
-                                    <template x-for="(item, index) in $data[key].data" :key="index">
-                                        <a :href="`/${key}/${item.id}`"
-                                            class="shrink-0 flex flex-col space-y-2 w-48 group/card">
-
-                                            <!-- Poster -->
-                                            <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
-                                                <template x-if="item.poster_path">
-                                                    <img :src="`https://image.tmdb.org/t/p/w300${item.poster_path}`"
-                                                        :alt="item.title || item.name"
-                                                        class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105">
-                                                </template>
-
-                                                <template x-if="!item.poster_path">
-                                                    <div class="w-full h-full flex items-center justify-center">
-                                                        <i
-                                                            class="fa-regular fa-image text-4xl text-(--muted-foreground)/25"></i>
-                                                    </div>
-                                                </template>
-                                            </div>
-
-                                            <!-- Info -->
-                                            <div class="space-y-0.5">
-                                                <div x-text="item.title || item.name"
-                                                    class="line-clamp-1 font-medium text-sm group-focus-visible/card:underline underline-offset-2">
-                                                </div>
-
-                                                <div
-                                                    class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
-                                                    <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-
-                                                    <span x-text="item.vote_average.toFixed(1)"
-                                                        class="font-medium text-(--foreground)"></span>
-
-                                                    <span>·</span>
-
-                                                    <span
-                                                        x-text="dayjs(item.release_date || item.first_air_date).format('YYYY')"></span>
-                                                </div>
-                                            </div>
-
-                                        </a>
+                                    <template x-for="(title, index) in $data[key].data" :key="index">
+                                        <x-titles.title-card />
                                     </template>
                                 </x-ui.horizontal-slider>
                             </template>
@@ -682,42 +535,8 @@
                                         x-transition:enter="transition ease-out duration-500"
                                         x-transition:enter-start="opacity-0 translate-y-6"
                                         x-transition:enter-end="opacity-100 translate-y-0">
-                                        <template x-for="(item, index) in $data[key].results" :key="index">
-                                            <a :href="`/${item.media_type || key}/${item.id}`"
-                                                class="shrink-0 flex flex-col space-y-2 w-48 group/card">
-                                                <!-- Poster -->
-                                                <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
-                                                    <template x-if="item.poster_path">
-                                                        <img :src="`https://image.tmdb.org/t/p/w300${item.poster_path}`"
-                                                            :alt="item.title || item.name"
-                                                            class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105">
-                                                    </template>
-
-                                                    <template x-if="!item.poster_path">
-                                                        <div class="w-full h-full flex items-center justify-center">
-                                                            <i
-                                                                class="fa-regular fa-image text-4xl text-(--muted-foreground)/25"></i>
-                                                        </div>
-                                                    </template>
-                                                </div>
-
-                                                <!-- Info -->
-                                                <div class="space-y-0.5">
-                                                    <div x-text="item.title || item.name"
-                                                        class="line-clamp-1 font-medium text-sm group-focus-visible/card:underline underline-offset-2">
-                                                    </div>
-
-                                                    <div
-                                                        class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
-                                                        <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-                                                        <span x-text="item.vote_average.toFixed(1)"
-                                                            class="font-medium text-(--foreground)"></span>
-                                                        <span>·</span>
-                                                        <span
-                                                            x-text="dayjs(item.release_date || item.first_air_date).format('YYYY')"></span>
-                                                    </div>
-                                                </div>
-                                            </a>
+                                        <template x-for="(title, index) in $data[key].results" :key="index">
+                                            <x-titles.title-card />
                                         </template>
                                     </x-ui.horizontal-slider>
                                 </template>
@@ -766,46 +585,47 @@
                     <!-- Content -->
                     <template x-if="!loading && !error && data.length">
                         <x-ui.horizontal-slider>
-                            <template x-for="(show, index) in data" :key="index">
-                                <a :href="`/tv/${show.id}`" class="shrink-0 flex flex-col space-y-2 w-48 group/card">
-                                    <!-- Poster -->
-                                    <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
-                                        <template x-if="show.poster_path">
-                                            <img :src="`https://image.tmdb.org/t/p/w300${show.poster_path}`"
-                                                :alt="show.name"
-                                                class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105">
-                                        </template>
+                            <template x-for="(title, index) in data" :key="index">
+                                {{-- <a :href="`/tv/${show.id}`" class="shrink-0 flex flex-col space-y-2 w-48 group/card">
+                    <!-- Poster -->
+                    <div class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
+                        <template x-if="show.poster_path">
+                            <img :src="`https://image.tmdb.org/t/p/w300${show.poster_path}`"
+                                :alt="show.name"
+                                class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105">
+                        </template>
 
-                                        <template x-if="!show.poster_path">
-                                            <div class="w-full h-full flex items-center justify-center">
-                                                <i
-                                                    class="fa-regular fa-image text-4xl text-(--muted-foreground)/25"></i>
-                                            </div>
-                                        </template>
+                        <template x-if="!show.poster_path">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i
+                                    class="fa-regular fa-image text-4xl text-(--muted-foreground)/25"></i>
+                            </div>
+                        </template>
 
-                                        <!-- Airing badge -->
-                                        <div
-                                            class="absolute top-2 left-2 flex items-center gap-1.5 bg-(--background)/80 backdrop-blur-sm rounded-md px-1.5 py-0.5">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                                            <span class="text-[10px] font-semibold">Airing</span>
-                                        </div>
-                                    </div>
+                        <!-- Airing badge -->
+                        <div
+                            class="absolute top-2 left-2 flex items-center gap-1.5 bg-(--background)/80 backdrop-blur-sm rounded-md px-1.5 py-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            <span class="text-[10px] font-semibold">Airing</span>
+                        </div>
+                    </div>
 
-                                    <!-- Info -->
-                                    <div class="space-y-0.5">
-                                        <div x-text="show.name"
-                                            class="line-clamp-1 font-medium text-sm group-focus-visible/card:underline underline-offset-2">
-                                        </div>
+                    <!-- Info -->
+                    <div class="space-y-0.5">
+                        <div x-text="show.name"
+                            class="line-clamp-1 font-medium text-sm group-focus-visible/card:underline underline-offset-2">
+                        </div>
 
-                                        <div class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
-                                            <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-                                            <span x-text="show.vote_average.toFixed(1)"
-                                                class="font-medium text-(--foreground)"></span>
-                                            <span>·</span>
-                                            <span x-text="dayjs(show.first_air_date).format('YYYY')"></span>
-                                        </div>
-                                    </div>
-                                </a>
+                        <div class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
+                            <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
+                            <span x-text="show.vote_average.toFixed(1)"
+                                class="font-medium text-(--foreground)"></span>
+                            <span>·</span>
+                            <span x-text="dayjs(show.first_air_date).format('YYYY')"></span>
+                        </div>
+                    </div>
+                </a> --}}
+                                <x-titles.title-card />
                             </template>
                         </x-ui.horizontal-slider>
                     </template>

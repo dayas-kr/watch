@@ -435,6 +435,7 @@ Alpine.data("topRatedList", () => ({
 }));
 
 Alpine.data("onTheAir", () => ({
+    media_type: "tv",
     loading: false,
     error: false,
     data: [],
@@ -458,7 +459,10 @@ Alpine.data("onTheAir", () => ({
 
             success: (res) => {
                 if (res?.data?.results) {
-                    this.data = res.data.results;
+                    this.data = res.data.results.map((item) => ({
+                        ...item,
+                        media_type: "tv",
+                    }));
                     this.loading = false;
                 } else {
                     this._retryOrFail(attempt);
