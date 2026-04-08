@@ -359,7 +359,7 @@ export default function registerComponents(Alpine) {
             this.loading = true;
             this.error = false;
 
-            if (["movie", "tv"].includes(page)) {
+            if (["movie.show", "tv.show"].includes(page)) {
                 this.$dispatch("sync:watchlist", watchlist);
             }
 
