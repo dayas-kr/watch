@@ -30,6 +30,7 @@ Route::prefix('/api')->group(function () {
     Route::get('/tv', [TmdbWatchlistController::class, 'tv'])->name('api.watchlist.tv');
 
     Route::post('/', [TmdbWatchlistController::class, 'toggle'])->name('api.watchlist.toggle');
+    Route::post('/sync_title', [TmdbWatchlistController::class, 'syncTitle'])->name('api.watchlist.sync_title');
   });
 
   Route::prefix('/movie')->group(function () {
