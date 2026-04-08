@@ -77,7 +77,7 @@
                                 <template x-for="item in getItems(key)" :key="item.id">
                                     <div class="shrink-0 flex flex-col space-y-2 group/card">
                                         <!-- Poster -->
-                                        <a :href="`/${key}/${item.id}`"
+                                        <a :href="`/${item.media_type}/${item.id}`"
                                             class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
                                             <template x-if="item.poster_path">
                                                 <img :src="`https://image.tmdb.org/t/p/w300${item.poster_path}`"
@@ -93,7 +93,8 @@
 
                                         <!-- Info -->
                                         <div class="space-y-0.5">
-                                            <a :href="`/${key}/${item.id}`" x-text="item.title || item.name"
+                                            <a :href="`/${item.media_type}/${item.id}`"
+                                                x-text="item.title || item.name"
                                                 class="line-clamp-1 font-medium text-sm hover:underline underline-offset-2">
                                             </a>
 
@@ -117,7 +118,7 @@
                                     <div class="flex flex-col py-2"
                                         :class="{ 'border-t border-(--border)': index !== 0 }">
                                         <div class="flex items-center gap-4">
-                                            <a :href="`/${key}/${item.id}`"
+                                            <a :href="`/${item.media_type}/${item.id}`"
                                                 class="w-20 aspect-2/3 bg-(--muted) rounded-md relative overflow-hidden shrink-0 mb-auto">
                                                 <template x-if="item.poster_path">
                                                     <img :src="`https://image.tmdb.org/t/p/w300${item.poster_path}`"
@@ -131,7 +132,8 @@
                                                 </div>
                                             </a>
                                             <div class="space-y-0.5">
-                                                <a :href="`/${key}/${item.id}`" x-text="item.title || item.name"
+                                                <a :href="`/${item.media_type}/${item.id}`"
+                                                    x-text="item.title || item.name"
                                                     class="font-medium hover:underline underline-offset-2"></a>
                                                 <div
                                                     class="flex flex-row items-center gap-y-0.5 gap-x-2 md:flex-col md:items-start">

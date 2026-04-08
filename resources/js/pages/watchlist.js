@@ -216,9 +216,14 @@ Alpine.data("watchlist", () => ({
                         this[type].data.map((i) => i.id),
                     );
 
-                    const newItems = res.data.results.filter(
+                    const filtered = res.data.results.filter(
                         (i) => !existingIds.has(i.id),
                     );
+
+                    const newItems = filtered.map((item) => ({
+                        ...item,
+                        media_type: type,
+                    }));
 
                     this[type].data.push(...newItems);
                     this[type].totalPages = res.data.total_pages;
