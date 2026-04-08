@@ -546,4 +546,68 @@ export default function registerComponents(Alpine) {
             return false;
         },
     }));
+
+    Alpine.data("watchedManager", () => ({
+        add(event) {
+            if (!this.validateEventdata(event)) return;
+            this.update(event, true);
+        },
+
+        remove(event) {
+            if (!this.validateEventdata(event)) return;
+            this.update(event, false);
+        },
+
+        update(event, watched) {
+            const { media_id, media_type } = event.detail;
+
+            this.handleSuccess("Watched status updated successfully");
+            this.$dispatch("sync:watched", watched);
+
+            $.ajax({
+                url: "/api/watched",
+                method: "POST",
+                data: { media_id, media_type, watched: watched ? 1 : 0 },
+                success: (res) => {
+                    if (!res.success) {
+                        this.handleError("Request unsuccessful", {
+                            media_id,
+                            media_type,
+                        });
+                        this.$dispatch("sync:watched", !watched);
+                    }
+                },
+                error: () => {
+                    this.handleError("Request failed");
+                    this.$dispatch("sync:watched", !watched);
+                },
+            });
+        },
+
+        validateEventdata(event) {
+            const { media_id, media_type } = event.detail;
+
+            if (!media_id || !["movie", "tv"].includes(media_type)) {
+                return this.handleError("Invalid event data");
+            }
+
+            return true;
+        },
+
+        handleSuccess(message) {
+            this.$dispatch("toast", {
+                type: "success",
+                title: message,
+            });
+        },
+
+        handleError(message) {
+            this.$dispatch("toast", {
+                type: "error",
+                title: message,
+            });
+            console.error("[Watched] Error:", message);
+            return false;
+        },
+    }));
 }
