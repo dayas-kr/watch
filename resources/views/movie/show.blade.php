@@ -1,5 +1,5 @@
 <x-base-layout>
-    <div x-data="movie({{ $movie_id }})" x-init="initialSetup(@js($movie_id))" class="flex flex-col min-h-screen font-body">
+    <div x-data="movie(@js($data))" class="flex flex-col min-h-screen font-body">
         <x-header />
         <main class="flex-1">
             <!-- Loading -->

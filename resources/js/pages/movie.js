@@ -5,32 +5,52 @@ import numeral from "numeral";
 import recommendations from "./titles/recommendations";
 import similar from "./titles/similar";
 
-Alpine.store("title", { id: null, media_type: null });
-
 Alpine.data("recommendations", recommendations);
 Alpine.data("similar", similar);
+Alpine.store("title", { id: null, media_type: null });
 
-Alpine.data("movie", (id) => ({
+Alpine.data("movie", (data) => ({
     title: {},
 
-    MAX_RETRIES: 3,
-    RETRY_DELAY_MS: 1000,
+    movie_id: null,
+    inWatchlist: null,
 
     loading: true,
     error: false,
 
+    MAX_RETRIES: 3,
+    RETRY_DELAY_MS: 1000,
+
     init() {
+        if (!this.initialValidation()) return;
+        this.initialSetup();
         this.fetchTitle();
     },
 
-    initialSetup(id) {
-        Alpine.store("title").id = Number(id);
-        Alpine.store("title").media_type = "movie";
+    initialValidation() {
+        const { id } = data;
+
+        if (!id) {
+            return this.handleError("Invalid ID");
+        }
+
+        return true;
     },
 
-    // Title
+    initialSetup() {
+        const { id, media_type = "movie", inWatchlist = false } = data;
+
+        this.movie_id = Number(id);
+
+        const store = Alpine.store("title");
+        store.id = this.movie_id;
+        store.media_type = media_type;
+
+        this.inWatchlist = inWatchlist;
+    },
+
     fetchTitle(attempt = 1) {
-        if (!id) {
+        if (!this.movie_id) {
             this.loading = false;
             this.error = true;
             return;
@@ -42,7 +62,7 @@ Alpine.data("movie", (id) => ({
         }
 
         $.ajax({
-            url: `/api/movie/${id}`,
+            url: `/api/movie/${this.movie_id}`,
             method: "GET",
             data: { append_to_response: "credits" },
             success: (res) => {
@@ -53,7 +73,6 @@ Alpine.data("movie", (id) => ({
                     this._retryTitleOrFail(attempt);
                 }
             },
-
             error: () => {
                 this._retryTitleOrFail(attempt);
             },
@@ -72,7 +91,6 @@ Alpine.data("movie", (id) => ({
         }
     },
 
-    // Helpers
     formatNumeral(num) {
         return numeral(num).format("0a");
     },
@@ -87,5 +105,6 @@ Alpine.data("movie", (id) => ({
 
     handleError(message) {
         console.error("Error in Movie:", message);
+        return false;
     },
 }));
