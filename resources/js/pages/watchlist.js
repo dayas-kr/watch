@@ -23,9 +23,6 @@ Alpine.data("watchlist", () => ({
         },
     },
 
-    // -----------------------------
-    // TAB STATES
-    // -----------------------------
     movie: {
         loading: false,
         error: false,
@@ -35,7 +32,7 @@ Alpine.data("watchlist", () => ({
         totalPages: 1,
         initialized: false,
         softDeleteItems: [],
-        orderByCreatedAsc: true,
+        orderByCreatedAsc: Alpine.$persist(true).as("watchlist-movie-order"),
     },
 
     tv: {
@@ -47,7 +44,7 @@ Alpine.data("watchlist", () => ({
         totalPages: 1,
         initialized: false,
         softDeleteItems: [],
-        orderByCreatedAsc: true,
+        orderByCreatedAsc: Alpine.$persist(true).as("watchlist-tv-order"),
     },
 
     isSourceActive(type) {
@@ -58,9 +55,6 @@ Alpine.data("watchlist", () => ({
         this.source = source;
     },
 
-    // -----------------------------
-    // FILTER UI
-    // -----------------------------
     toggleFilterBy() {
         this.filterBy.open = !this.filterBy.open;
 
@@ -82,9 +76,6 @@ Alpine.data("watchlist", () => ({
         return this.filterBy.options[this.filterBy.value];
     },
 
-    // -----------------------------
-    // ORDER BY (PER TAB + OPTIMIZED)
-    // -----------------------------
     toggleOrderBy() {
         const type = this.source;
 
@@ -92,20 +83,14 @@ Alpine.data("watchlist", () => ({
 
         this[type].orderByCreatedAsc = !this[type].orderByCreatedAsc;
 
-        // If sorting is client-side → no refetch ever
         if (this.filterBy.value !== "added") return;
 
-        // If all data already loaded → just reorder locally
         if (isFullyLoaded) return;
 
-        // Otherwise refetch with new server order
         this.resetList(type);
         this.fetch(type);
     },
 
-    // -----------------------------
-    // RESET
-    // -----------------------------
     resetList(type) {
         this[type].loading = false;
         this[type].error = false;
@@ -116,9 +101,6 @@ Alpine.data("watchlist", () => ({
         this[type].initialized = false;
     },
 
-    // -----------------------------
-    // GET SORTED ITEMS
-    // -----------------------------
     getItems(type) {
         if (!this[type]) return [];
 
@@ -126,14 +108,12 @@ Alpine.data("watchlist", () => ({
             (item) => !this[type].softDeleteItems.includes(item.id),
         );
 
-        // Popularity
         if (this.filterBy.value === "popularity") {
             return this[type].orderByCreatedAsc
                 ? [...items].sort((a, b) => a.popularity - b.popularity)
                 : [...items].sort((a, b) => b.popularity - a.popularity);
         }
 
-        // Release Date
         if (this.filterBy.value === "release_date") {
             return this[type].orderByCreatedAsc
                 ? [...items].sort((a, b) =>
@@ -148,27 +128,21 @@ Alpine.data("watchlist", () => ({
                   );
         }
 
-        // User Rating
         if (this.filterBy.value === "vote_average") {
             return this[type].orderByCreatedAsc
                 ? [...items].sort((a, b) => a.vote_average - b.vote_average)
                 : [...items].sort((a, b) => b.vote_average - a.vote_average);
         }
 
-        // Number of Ratings
         if (this.filterBy.value === "vote_count") {
             return this[type].orderByCreatedAsc
                 ? [...items].sort((a, b) => a.vote_count - b.vote_count)
                 : [...items].sort((a, b) => b.vote_count - a.vote_count);
         }
 
-        // Default (Date Added from API)
         return this[type].orderByCreatedAsc ? items : [...items].reverse();
     },
 
-    // -----------------------------
-    // INIT
-    // -----------------------------
     init() {
         this.$watch("source", (type) => {
             if (!this[type].initialized) {
@@ -179,16 +153,10 @@ Alpine.data("watchlist", () => ({
         this.fetch(this.source);
     },
 
-    // -----------------------------
-    // PAGINATION
-    // -----------------------------
     hasMore(type) {
         return this[type].page <= this[type].totalPages;
     },
 
-    // -----------------------------
-    // FETCH
-    // -----------------------------
     fetch(type, attempt = 1) {
         if (!this.hasMore(type)) return;
 
@@ -250,9 +218,6 @@ Alpine.data("watchlist", () => ({
         });
     },
 
-    // -----------------------------
-    // RETRY
-    // -----------------------------
     _retryOrFail(type, attempt, message) {
         if (attempt < this.MAX_RETRIES) {
             setTimeout(() => {
@@ -267,9 +232,6 @@ Alpine.data("watchlist", () => ({
         }
     },
 
-    // -----------------------------
-    // DELETE HANDLING
-    // -----------------------------
     softDelete(event) {
         const { media_id, media_type } = event.detail;
 
@@ -312,7 +274,6 @@ Alpine.data("watchlist", () => ({
         console.error("Watchlist Error:", message);
     },
 
-    // Helpers
     formatDate(date) {
         return dayjs(date).format("YYYY");
     },
