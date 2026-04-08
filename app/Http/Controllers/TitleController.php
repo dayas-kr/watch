@@ -13,7 +13,10 @@ class TitleController extends Controller
     {
         $data = [
             'id' => (int) $movie_id,
-            'inWatchlist' => $this->inWatchlist($movie_id, MediaType::MOVIE)
+            'watchlist' => $this->getList(ListType::WATCHLIST),
+            'favorites' => $this->getList(ListType::FAVORITES),
+            'inWatchlist' => $this->inList($movie_id, MediaType::MOVIE, ListType::WATCHLIST),
+            'inWatched' => $this->inList($movie_id, MediaType::MOVIE, ListType::WATCHED)
         ];
 
         return view('movie.show', compact('data'));
@@ -23,17 +26,29 @@ class TitleController extends Controller
     {
         $data = [
             'id' => (int) $tv_id,
-            'inWatchlist' => $this->inWatchlist($tv_id, MediaType::TV)
+            'watchlist' => $this->getList(ListType::WATCHLIST),
+            'favorites' => $this->getList(ListType::FAVORITES),
+            'watched' => $this->getList(ListType::WATCHED),
+            'inWatchlist' => $this->inList($tv_id, MediaType::TV, ListType::WATCHLIST),
+            'inWatched' => $this->inList($tv_id, MediaType::TV, ListType::WATCHED)
         ];
 
         return view('tv.show', compact('data'));
     }
 
-    private function inWatchlist($mediaId, $mediaType)
+    private function inList($mediaId, $mediaType, $listType)
     {
-        return UserList::defaultOfType(Auth::id(), ListType::WATCHLIST)
+        return UserList::defaultOfType(Auth::id(), $listType)
             ->items()
             ->where(['media_id' => $mediaId, 'media_type' => $mediaType])
             ->exists();
+    }
+
+    private function getList($listType)
+    {
+        return UserList::defaultOfType(Auth::id(), $listType)
+            ->items()
+            ->with('mediaType')
+            ->pluck('media_id');
     }
 }
