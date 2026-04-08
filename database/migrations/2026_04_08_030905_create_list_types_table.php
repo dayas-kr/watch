@@ -17,6 +17,7 @@ return new class extends Migration
         ListType::insert([
             ['id' => 1, 'name' => 'watchlist'],
             ['id' => 2, 'name' => 'favorites'],
+            ['id' => 3, 'name' => 'watched'],
         ]);
     }
 

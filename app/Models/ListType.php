@@ -11,4 +11,5 @@ class ListType extends Model
 
     const WATCHLIST = 1;
     const FAVORITES = 2;
+    const WATCHED = 3;
 }
