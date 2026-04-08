@@ -1,5 +1,5 @@
 <x-base-layout title="Watch">
-    <div class="flex flex-col min-h-screen font-body">
+    <div x-data="welcome(@js($data))" class="flex flex-col min-h-screen font-body">
         <x-header />
         <main class="flex-1">
             <div class="max-w-7xl px-4 py-8 mx-auto sm:px-6 sm:py-10 space-y-10 md:space-y-14">
