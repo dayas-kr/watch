@@ -418,14 +418,14 @@ export default function registerComponents(Alpine) {
 
             if (page === "watchlist") {
                 this.$dispatch("delete:soft", {
-                    media_id: media_id,
-                    media_type: media_type,
+                    media_id,
+                    media_type,
                 });
             }
 
             this.$dispatch("title-card:sync-watchlist", {
                 id: media_id,
-                watchlist: watchlist,
+                watchlist,
             });
 
             $.ajax({
@@ -450,44 +450,45 @@ export default function registerComponents(Alpine) {
                             this.loading = false;
 
                             if (syncRes.success) {
-                                console.log(`[Watchlist] Synced`, {
-                                    media_id,
-                                    media_type,
+                                this.$dispatch("toast", {
+                                    type: "success",
+                                    title: "Watchlist updated successfully",
                                 });
 
                                 if (page === "watchlist") {
                                     this.$dispatch("delete:permanent", {
-                                        media_id: media_id,
-                                        media_type: media_type,
+                                        media_id,
+                                        media_type,
                                     });
                                 }
 
                                 return;
                             }
 
-                            console.warn(`[Watchlist] Sync failed`, {
-                                media_id,
-                                media_type,
+                            this.$dispatch("toast", {
+                                type: "error",
+                                title: "Sync failed",
                             });
 
                             if (page === "watchlist") {
                                 this.$dispatch("delete:rollback", {
-                                    media_id: media_id,
-                                    media_type: media_type,
+                                    media_id,
+                                    media_type,
                                 });
                             }
                         },
                         error: () => {
                             this.loading = false;
-                            console.warn(`[Watchlist] Sync request failed`, {
-                                media_id,
-                                media_type,
+
+                            this.$dispatch("toast", {
+                                type: "error",
+                                title: "Sync request failed",
                             });
 
                             if (page === "watchlist") {
                                 this.$dispatch("delete:rollback", {
-                                    media_id: media_id,
-                                    media_type: media_type,
+                                    media_id,
+                                    media_type,
                                 });
                             }
                         },
@@ -500,8 +501,8 @@ export default function registerComponents(Alpine) {
 
                     if (page === "watchlist") {
                         this.$dispatch("delete:rollback", {
-                            media_id: media_id,
-                            media_type: media_type,
+                            media_id,
+                            media_type,
                         });
                     }
 
@@ -517,9 +518,9 @@ export default function registerComponents(Alpine) {
                     this.loading = false;
                     this.error = true;
 
-                    console.error(`[Watchlist] Request failed, rolled back`, {
-                        media_id,
-                        media_type,
+                    this.$dispatch("toast", {
+                        type: "error",
+                        title: "Request failed, changes rolled back",
                     });
                 },
             });
@@ -536,6 +537,11 @@ export default function registerComponents(Alpine) {
         },
 
         handleError(message, context = {}) {
+            this.$dispatch("toast", {
+                type: "error",
+                title: message,
+            });
+
             console.error("[Watchlist] Error:", message, context);
             return false;
         },
