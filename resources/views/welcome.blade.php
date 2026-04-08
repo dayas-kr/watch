@@ -202,10 +202,12 @@
                                         </div>
 
                                         <div class="flex items-center gap-1.5 text-xs text-(--muted-foreground)">
-                                            <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-                                            <span x-text="movie.vote_average.toFixed(1)"
-                                                class="font-medium text-(--foreground)"></span>
-                                            <span>·</span>
+                                            <template x-if="movie.vote_average">
+                                                <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
+                                                <span x-text="movie.vote_average.toFixed(1)"
+                                                    class="font-medium text-(--foreground)"></span>
+                                                <span>·</span>
+                                            </template>
                                             <span x-text="dayjs(movie.release_date).format('YYYY')"></span>
                                         </div>
                                     </div>
