@@ -307,7 +307,6 @@ export default function registerComponents(Alpine) {
 
         init() {
             this.route = this.setRoute();
-            console.log("route:", this.route);
         },
 
         setRoute() {
@@ -417,6 +416,13 @@ export default function registerComponents(Alpine) {
                 this.$dispatch("sync:watchlist", watchlist);
             }
 
+            if (page === "watchlist") {
+                this.$dispatch("delete:soft", {
+                    media_id: media_id,
+                    media_type: media_type,
+                });
+            }
+
             this.$dispatch("title-card:sync-watchlist", {
                 id: media_id,
                 watchlist: watchlist,
@@ -448,6 +454,14 @@ export default function registerComponents(Alpine) {
                                     media_id,
                                     media_type,
                                 });
+
+                                if (page === "watchlist") {
+                                    this.$dispatch("delete:permanent", {
+                                        media_id: media_id,
+                                        media_type: media_type,
+                                    });
+                                }
+
                                 return;
                             }
 
@@ -455,6 +469,13 @@ export default function registerComponents(Alpine) {
                                 media_id,
                                 media_type,
                             });
+
+                            if (page === "watchlist") {
+                                this.$dispatch("delete:rollback", {
+                                    media_id: media_id,
+                                    media_type: media_type,
+                                });
+                            }
                         },
                         error: () => {
                             this.loading = false;
@@ -462,12 +483,26 @@ export default function registerComponents(Alpine) {
                                 media_id,
                                 media_type,
                             });
+
+                            if (page === "watchlist") {
+                                this.$dispatch("delete:rollback", {
+                                    media_id: media_id,
+                                    media_type: media_type,
+                                });
+                            }
                         },
                     });
                 },
                 error: () => {
                     if (["movie", "tv"].includes(page)) {
                         this.$dispatch("sync:watchlist", !watchlist);
+                    }
+
+                    if (page === "watchlist") {
+                        this.$dispatch("delete:rollback", {
+                            media_id: media_id,
+                            media_type: media_type,
+                        });
                     }
 
                     this.$dispatch("title-card:sync-watchlist", {

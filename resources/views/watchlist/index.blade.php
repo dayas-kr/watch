@@ -1,7 +1,8 @@
 <x-base-layout title="Watchlist">
     <div class="flex flex-col min-h-screen font-body">
         <x-header />
-        <main x-data="watchlist" class="flex-1">
+        <main x-data="watchlist" @delete:soft.window="softDelete($event)"
+            @delete:rollback.window="rollbackDelete($event)" @delete:permanent.window="delete($event)" class="flex-1">
             <div class="max-w-7xl px-4 py-8 mx-auto sm:px-3 sm:py-6">
                 <div class="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 gap-y-2 mb-4 md:mb-6 lg:mb-8">
                     <h1 class="text-xl sm:text-2xl font-semibold text-(--foreground)">
@@ -74,14 +75,14 @@
                         <div>
                             <div x-show="gridView"
                                 class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 md:gap-8 gap-y-8">
-                                <template x-for="item in getItems(key)" :key="item.id">
+                                <template x-for="title in getItems(key)" :key="title.id">
                                     <div class="shrink-0 flex flex-col space-y-2 group/card">
                                         <!-- Poster -->
-                                        <a :href="`/${item.media_type}/${item.id}`"
-                                            class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden">
-                                            <template x-if="item.poster_path">
-                                                <img :src="`https://image.tmdb.org/t/p/w300${item.poster_path}`"
-                                                    :alt="item.title || item.name"
+                                        <a :href="`/${title.media_type}/${title.id}`"
+                                            class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden group/img">
+                                            <template x-if="title.poster_path">
+                                                <img :src="`https://image.tmdb.org/t/p/w300${title.poster_path}`"
+                                                    :alt="title.title || title.name"
                                                     class="w-full h-full object-cover transition duration-300 group-hover/card:scale-105 z-1">
                                             </template>
 
@@ -89,25 +90,36 @@
                                                 <i
                                                     class="fa-regular fa-image text-5xl text-(--muted-foreground)/25"></i>
                                             </div>
+
+                                            <!-- Actions -->
+                                            <div @click.prevent
+                                                class="z-10 bg-neutral-500/50 absolute bottom-0 left-0 right-0 backdrop-blur-sm group-hover/img:translate-y-0 flex flex-col gap-2 p-2 translate-y-full transition-all cursor-default">
+                                                <button
+                                                    @click.prevent="$dispatch('watchlist:remove',  { media_id: title.id, media_type: title.media_type, page: $store.db.route })"
+                                                    class="h-7 w-full border border-transparent bg-neutral-500 hover:bg-red-400 rounded-full flex items-center justify-center gap-2 text-white group/delete text-sm font-medium focus:outline-none">
+                                                    <x-lucide-trash class="size-4" stroke-width="2.5" />
+                                                    Remove
+                                                </button>
+                                            </div>
                                         </a>
 
                                         <!-- Info -->
                                         <div class="space-y-0.5">
-                                            <a :href="`/${item.media_type}/${item.id}`"
-                                                x-text="item.title || item.name"
+                                            <a :href="`/${title.media_type}/${title.id}`"
+                                                x-text="title.title || title.name"
                                                 class="line-clamp-1 font-medium text-sm hover:underline underline-offset-2">
                                             </a>
 
                                             <div class="flex items-center gap-1.5 text-sm text-(--muted-foreground)">
                                                 <i class="fa-solid fa-star text-yellow-500 text-[9px]"></i>
-                                                <span x-text="item.vote_average.toFixed(1)" class="font-medium"></span>
-                                                <template x-if="item.vote_count">
-                                                    <span x-text="`(${formatNumeral(item.vote_count)})`"
+                                                <span x-text="title.vote_average.toFixed(1)" class="font-medium"></span>
+                                                <template x-if="title.vote_count">
+                                                    <span x-text="`(${formatNumeral(title.vote_count)})`"
                                                         class="font-medium uppercase"></span>
                                                 </template>
                                                 <span>·</span>
                                                 <span
-                                                    x-text="formatDate(item.first_air_date || item.release_date)"></span>
+                                                    x-text="formatDate(title.first_air_date || title.release_date)"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -163,7 +175,8 @@
                                                             this.text.slice(0, this.limit) + '...' :
                                                             this.text;
                                                     }
-                                                }" class="text-sm text-(--muted-foreground)">
+                                                }"
+                                                    class="text-sm text-(--muted-foreground)">
                                                     <!-- Text -->
                                                     <p x-text="expanded ? text : shortText"></p>
 
@@ -212,6 +225,8 @@
         </main>
         <x-footer />
     </div>
+
+    <x-titles.watchlist-manager />
 
     @push('head')
         @vite('resources/js/pages/watchlist.js')
