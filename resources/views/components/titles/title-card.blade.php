@@ -2,7 +2,7 @@
 
 <div x-data="titleCard(title)" :data-title-id="title.id" :data-watchlist="inWatchlist ? 'true' : 'false'"
     @title-card:sync-watchlist.window="updateWatchlist($event)" data-slot="title-card"
-    class="shrink-0 flex flex-col space-y-2 w-48 group/card">
+    {{ $attributes->merge(['class' => 'shrink-0 flex flex-col space-y-2 w-48 group/card']) }}>
     <!-- Poster -->
     <a :href="`/${title.media_type}/${title.id}`"
         class="bg-(--muted) rounded-xl aspect-2/3 relative overflow-hidden group/img {{ $watchlistAction ? 'hover:rounded-tl-none' : '' }}">
