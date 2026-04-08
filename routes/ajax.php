@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\TmdbSearchController;
 use App\Http\Controllers\Api\TmdbTrendingController;
 use App\Http\Controllers\Api\TmdbTvController;
 use App\Http\Controllers\Api\TmdbWatchlistController;
+use App\Http\Controllers\WatchController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/api')->group(function () {
@@ -32,6 +33,8 @@ Route::prefix('/api')->group(function () {
     Route::post('/', [TmdbWatchlistController::class, 'toggle'])->name('api.watchlist.toggle');
     Route::post('/sync_title', [TmdbWatchlistController::class, 'syncTitle'])->name('api.watchlist.sync_title');
   });
+
+  Route::post('/watched', WatchController::class)->name('api.watched.toggle');
 
   Route::prefix('/movie')->group(function () {
     Route::get('/now_playing', [TmdbMovieController::class, 'nowPlaying'])->name('api.movie.now_playing');
