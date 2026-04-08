@@ -43,7 +43,10 @@ export default (id, media_type) => ({
 
             success: (res) => {
                 if (res.success) {
-                    this.results = res.data.results ?? [];
+                    this.results = res.data.results.map((item) => ({
+                        ...item,
+                        media_type: this.media_type,
+                    }));
                     this.loading = false;
                 } else {
                     this._retryOrFail(attempt);
