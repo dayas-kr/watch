@@ -22,7 +22,13 @@ class WelcomeController extends Controller
 
     private function getList($listType)
     {
-        return UserList::defaultOfType(Auth::id(), $listType)
+        $userId = Auth::id();
+
+        if (!$userId) {
+            return collect();
+        }
+
+        return UserList::defaultOfType($userId, $listType)
             ->items()
             ->with('mediaType')
             ->pluck('media_id');
