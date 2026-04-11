@@ -130,7 +130,7 @@ export default function registerComponents(Alpine) {
         // ── Input events ───────────────────────────────────────────────────────
         handleInputFocus() {
             this.sourcesDialogOpen = false;
-            if (this.query.trim() || this.results.length) {
+            if (this.query.trim() && this.results.length) {
                 this.open = true;
             }
         },
@@ -173,6 +173,8 @@ export default function registerComponents(Alpine) {
             if (!q) {
                 this.results = [];
                 this.open = false;
+                this.loading = false;
+                if (this._xhr) this._xhr.abort();
                 return;
             }
 

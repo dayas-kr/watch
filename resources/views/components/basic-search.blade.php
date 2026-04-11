@@ -2,8 +2,8 @@
     @keydown.ctrl.k.window.prevent="$refs.searchInput.focus()">
     <div class="grid grid-cols-[auto_1fr_auto] items-center gap-2 h-9 border border-(--border) rounded-xl">
         <button @click="toggleSourcesDialog" x-ref="sourcesButton"
-            class="border-r border-(--border) h-full px-3 flex items-center text-sm font-medium cursor-pointer select-none">
-            <span x-text="activeSourceLabel"></span>
+            class="border-r border-(--border) h-full px-3 flex items-center text-sm font-medium cursor-pointer select-none rounded-l-xl">
+            <span x-text="activeSourceLabel" class="select-none"></span>
             <x-lucide-chevron-down class="ml-1.5 size-4 text-(--muted-foreground)" />
         </button>
         <input x-model="query" @input.debounce.500ms="fetchResults" @keydown.down.prevent="moveSelection(1)"
@@ -17,7 +17,7 @@
     </div>
 
     <!-- Sources Dialog -->
-    <div x-show="sourcesDialogOpen" x-trap.noScroll="sourcesDialogOpen" @keydown.down="$focus.next()"
+    <div x-show="sourcesDialogOpen" x-cloak x-trap.noScroll="sourcesDialogOpen" @keydown.down="$focus.next()"
         @keydown.up="$focus.previous()" x-anchor.bottom-start.offset.4="$refs.sourcesButton"
         @click.outside="closeSourcesDialog" @keydown.escape.window="closeSourcesDialog" x-transition
         class="bg-(--popover) border border-(--border) shadow p-1 flex flex-col rounded-xl min-w-52 z-50">
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Results Dropdown -->
-    <div x-show="open"
+    <div x-show="open" x-cloak
         class="absolute top-10 max-h-[calc(100vh-3.5rem)] w-full rounded-xl z-50 bg-(--popover) border border-(--border) shadow overflow-hidden flex flex-col">
         <!-- Loading indicator -->
         <div x-show="loading" class="py-12 flex items-center justify-center">
@@ -131,8 +131,9 @@
             <template x-if="!loading && activeResultType === 'title'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
-                        :data-movie-card="index === selectedIndex" :data-tv-card="index === selectedIndex"
-                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
+                        @mouseenter="selectedIndex = index" :data-movie-card="index === selectedIndex"
+                        :data-tv-card="index === selectedIndex"
+                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <!-- Poster -->
                         <div class="aspect-2/3 bg-(--border) w-14 rounded-sm relative overflow-hidden shrink-0">
                             <template x-if="item.poster_path">
@@ -159,8 +160,8 @@
             <template x-if="!loading && activeResultType === 'person'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
-                        :data-person-card="index === selectedIndex"
-                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
+                        @mouseenter="selectedIndex = index" :data-person-card="index === selectedIndex"
+                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <!-- Profile photo -->
                         <div class="aspect-2/3 bg-(--border) w-14 rounded-sm relative overflow-hidden shrink-0">
                             <template x-if="avatarUrl(item.profile_path)">
@@ -189,8 +190,8 @@
             <template x-if="!loading && activeResultType === 'collection'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
-                        :data-collection-card="index === selectedIndex"
-                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
+                        @mouseenter="selectedIndex = index" :data-collection-card="index === selectedIndex"
+                        class="flex items-center gap-2 shrink-0 px-2 py-1.75 data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <div class="aspect-2/3 bg-(--border) w-14 rounded-sm relative overflow-hidden shrink-0">
                             <template x-if="item.poster_path">
                                 <img :src="posterUrl(item.poster_path)" :alt="item.name"
@@ -220,8 +221,8 @@
             <template x-if="!loading && activeResultType === 'company'">
                 <template x-for="(item, index) in results" :key="item.id">
                     <a :href="itemHref(item)" :data-active="index === selectedIndex"
-                        :data-company-card="index === selectedIndex"
-                        class="flex items-center gap-3 shrink-0 px-3 py-2 hover:bg-(--muted) data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
+                        @mouseenter="selectedIndex = index" :data-company-card="index === selectedIndex"
+                        class="flex items-center gap-3 shrink-0 px-3 py-2 data-[active=true]:bg-(--muted) transition-colors cursor-pointer select-none">
                         <div
                             class="w-14 h-10 rounded-md bg-white flex items-center justify-center p-1.5 shrink-0 border border-(--border)">
                             <template x-if="item.logo_path">
