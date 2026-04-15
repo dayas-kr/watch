@@ -1,17 +1,31 @@
 <div {{ $attributes->merge(['class' => 'flex flex-col gap-3']) }}>
-    <button
-        @click="$dispatch(`watchlist:${inWatchlist ? 'remove' : 'add'}`, { media_id: $store.title.id, media_type: $store.title.media_type, page: $store.db.route })"
-        class="bg-(--primary) text-(--primary-foreground) border-(--primary) shadow-[inset_0_1px_0_oklch(1_0_0/20%),inset_0_-1px_0_oklch(0_0_0/15%)] hover:opacity-90 focus:opacity-90 flex items-center justify-center gap-2 border px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 outline-none select-none cursor-pointer active:not-aria-[haspopup]:translate-y-px w-full">
-        <i class="fa-bookmark" :class="inWatchlist ? 'fa-solid' : 'fa-regular'"></i>
-        <span x-text="inWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'"></span>
-    </button>
+    @auth
+        <button
+            @click="$dispatch(`watchlist:${inWatchlist ? 'remove' : 'add'}`, { media_id: $store.title.id, media_type: $store.title.media_type })"
+            class="bg-(--primary) text-(--primary-foreground) border-(--primary) shadow-[inset_0_1px_0_oklch(1_0_0/20%),inset_0_-1px_0_oklch(0_0_0/15%)] hover:opacity-90 focus:opacity-90 flex items-center justify-center gap-2 border px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 outline-none select-none cursor-pointer active:not-aria-[haspopup]:translate-y-px w-full">
+            <i class="fa-bookmark" :class="inWatchlist ? 'fa-solid' : 'fa-regular'"></i>
+            <span x-text="inWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'"></span>
+        </button>
 
-    <x-ui.button
-        @click="$dispatch(`watched:${inWatched ? 'remove' : 'add'}`, { media_id: $store.title.id, media_type: $store.title.media_type })"
-        variant="outline" size="lg" class="rounded-full! cursor-pointer!">
-        <i :class="inWatched ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle-check'"></i>
-        <span x-text="inWatched ? 'Mark as Unwatched' : 'Mark as Watched'"></span>
-    </x-ui.button>
+        <x-ui.button
+            @click="$dispatch(`watched:${inWatched ? 'remove' : 'add'}`, { media_id: $store.title.id, media_type: $store.title.media_type })"
+            variant="outline" size="lg" class="rounded-full! cursor-pointer!">
+            <i :class="inWatched ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle-check'"></i>
+            <span x-text="inWatched ? 'Mark as Unwatched' : 'Mark as Watched'"></span>
+        </x-ui.button>
+    @else
+        <a href="/login"
+            class="bg-(--primary) text-(--primary-foreground) border-(--primary) shadow-[inset_0_1px_0_oklch(1_0_0/20%),inset_0_-1px_0_oklch(0_0_0/15%)] hover:opacity-90 flex items-center justify-center gap-2 border px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 w-full">
+            <i class="fa-regular fa-bookmark"></i>
+            <span>Add to Watchlist</span>
+        </a>
+
+        <a href="/login"
+            class="flex items-center justify-center gap-2 border px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 w-full border-(--input)">
+            <i class="fa-regular fa-circle-check"></i>
+            <span>Mark as Watched</span>
+        </a>
+    @endauth
 
     <div class="flex gap-2 text-sm pt-1">
         <a :href="`https://www.imdb.com/title/${title.imdb_id}/reviews`" target="_blank"
@@ -45,7 +59,7 @@
             </a>
         </template>
 
-        <a :href="`https://www.themoviedb.org/movie/${title.id}`" target="_blank" class="contents">
+        <a :href="`https://www.themoviedb.org/${$store.title.media_type}/${title.id}`" target="_blank" class="contents">
             <x-ui.button variant="secondary" size="lg" class="rounded-full! cursor-pointer!">
                 <span>View on <strong>TMDB</strong></span>
             </x-ui.button>

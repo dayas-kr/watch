@@ -16,15 +16,13 @@
         </div>
 
         @if ($watchlistAction)
-            <button
-                @click.prevent="$dispatch('watchlist:add', { media_id: title.id, media_type: title.media_type, page: $store.db.route })"
+            <button @click.prevent="$dispatch('watchlist:add', { media_id: title.id, media_type: title.media_type })"
                 class="hidden group-data-[watchlist=false]/card:group-hover/card:block absolute top-0 left-0 w-8 h-12 bg-neutral-500/75 hover:bg-neutral-500/85 shadow-sm shadow-black text-white items-center justify-center cursor-pointer"
                 style="clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 82%, 0% 100%);" title="Add to Watchlist">
                 <i class="fa-solid fa-plus text-lg text-shadow-sm mb-2.5"></i>
             </button>
 
-            <button
-                @click.prevent="$dispatch('watchlist:remove', { media_id: title.id, media_type: title.media_type, page: $store.db.route })"
+            <button @click.prevent="$dispatch('watchlist:remove', { media_id: title.id, media_type: title.media_type })"
                 class="hidden group-data-[watchlist=true]/card:group-hover/card:block absolute top-0 left-0 py-1.75 px-1 rounded-br-lg backdrop-blur-sm bg-neutral-500/50"
                 title="Remove from Watchlist">
                 <i class="fa-solid fa-bookmark text-white text-xl text-shadow-2xs"></i>
