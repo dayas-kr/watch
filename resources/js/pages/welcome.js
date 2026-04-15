@@ -1,18 +1,6 @@
 import Alpine from "alpinejs";
 import $ from "jquery";
 
-Alpine.data("welcome", (data) => ({
-    init() {
-        const { watchlist, favorites, watched } = data;
-
-        const store = Alpine.store("db");
-
-        store.watchlist = watchlist;
-        store.favorites = favorites;
-        store.watched = watched;
-    },
-}));
-
 Alpine.data("featuredTabs", () => ({
     activeTab: "movie",
 
