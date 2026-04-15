@@ -52,10 +52,6 @@ class TmdbWatchlistController extends Controller
     {
         $mediaTypeId = MediaType::where('name', $request->media_type)->value('id');
 
-        if (!$mediaTypeId) {
-            return response()->json(['message' => 'Invalid media type: ' . $request->media_type], 422);
-        }
-
         // 1. TMDB first — if this throws, DB is never touched
         $query = $this->buildQuery($request, ['media_type', 'media_id', 'watchlist']);
         $tmdbResponse = $this->handleTmdb(fn() => $this->client->toggleWatchlist($query));
