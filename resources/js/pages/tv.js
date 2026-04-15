@@ -48,20 +48,16 @@ Alpine.data("tv", (data) => ({
     },
 
     initialSetup() {
-        const {
-            id,
-            media_type = "tv",
-            inWatchlist = false,
-            inWatched = false,
-        } = data;
+        const { id, inWatchlist = false, inWatched = false } = data;
 
         this.tv_id = Number(id);
+
+        Alpine.store("db").setup(data);
+        Alpine.store("title").id = this.tv_id;
+        Alpine.store("title").media_type = "tv";
+
         this.inWatchlist = inWatchlist;
         this.inWatched = inWatched;
-
-        const store = Alpine.store("title");
-        store.id = this.tv_id;
-        store.media_type = media_type;
     },
 
     fetchTitle(attempt = 1) {

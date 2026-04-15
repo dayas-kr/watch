@@ -26,14 +26,6 @@ Alpine.data("movie", (data) => ({
         if (!this.initialValidation()) return;
         this.initialSetup();
         this.fetchTitle();
-
-        const { watchlist, favorites, watched } = data;
-
-        const store = Alpine.store("db");
-
-        store.watchlist = watchlist;
-        store.favorites = favorites;
-        store.watched = watched;
     },
 
     initialValidation() {
@@ -47,18 +39,13 @@ Alpine.data("movie", (data) => ({
     },
 
     initialSetup() {
-        const {
-            id,
-            media_type = "movie",
-            inWatchlist = false,
-            inWatched = false,
-        } = data;
+        const { id, inWatchlist = false, inWatched = false } = data;
 
         this.movie_id = Number(id);
 
-        const store = Alpine.store("title");
-        store.id = this.movie_id;
-        store.media_type = media_type;
+        Alpine.store("db").setup(data);
+        Alpine.store("title").id = this.movie_id;
+        Alpine.store("title").media_type = "movie";
 
         this.inWatchlist = inWatchlist;
         this.inWatched = inWatched;
