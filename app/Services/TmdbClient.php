@@ -85,6 +85,53 @@ class TmdbClient
     }
 
     // -------------------------------------------------------
+    // LIST
+    // -------------------------------------------------------
+
+    public function lists(array $query = []): array
+    {
+        return $this->getV4("/account/{$this->accountId}/lists", $query);
+    }
+
+    public function list(int|string $list_id, array $query = []): array
+    {
+        return $this->getV4("/list/{$list_id}", $query);
+    }
+
+    public function createList(array $data = []): array
+    {
+        return $this->postV4('/list', $data);
+    }
+
+    public function clearList(int|string $list_id): array
+    {
+        return $this->postV4("/list/{$list_id}/clear");
+    }
+
+    public function deleteList(int|string $list_id): array
+    {
+        return $this->deleteV4("/list/{$list_id}");
+    }
+
+    public function addListItems(int|string $list_id, array $items): array
+    {
+        return $this->postV4("/list/{$list_id}/items", ['items' => $items]);
+    }
+
+    public function removeListItems(int|string $list_id, array $items): array
+    {
+        return $this->deleteV4("/list/{$list_id}/items", ['items' => $items]);
+    }
+
+    public function listItemStatus(int|string $list_id, int $media_id, string $media_type): array
+    {
+        return $this->getV4("/list/{$list_id}/item_status", [
+            'media_id'   => $media_id,
+            'media_type' => $media_type,
+        ]);
+    }
+
+    // -------------------------------------------------------
     // TRENDING
     // -------------------------------------------------------
 
@@ -245,6 +292,28 @@ class TmdbClient
     {
         try {
             $response = $this->v4()->get($endpoint, $query);
+
+            return $response->json();
+        } catch (ConnectionException $e) {
+            $this->handleConnectionException($endpoint, $e);
+        }
+    }
+
+    public function postV4(string $endpoint, array $data = []): array
+    {
+        try {
+            $response = $this->v4()->post($endpoint, $data);
+
+            return $response->json();
+        } catch (ConnectionException $e) {
+            $this->handleConnectionException($endpoint, $e);
+        }
+    }
+
+    public function deleteV4(string $endpoint, array $data = []): array
+    {
+        try {
+            $response = $this->v4()->delete($endpoint, $data);
 
             return $response->json();
         } catch (ConnectionException $e) {
