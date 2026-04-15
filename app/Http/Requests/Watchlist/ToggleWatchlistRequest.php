@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Watchlist;
 
 use App\Http\Requests\BaseApiRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ToggleWatchlistRequest extends BaseApiRequest
 {
@@ -12,6 +14,16 @@ class ToggleWatchlistRequest extends BaseApiRequest
             'watchlist' => $this->watchlist ? true : false,
         ]);
     }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            if ((int) $this->user_id !== Auth::id()) {
+                $validator->errors()->add('user_id', 'User ID does not match the authenticated user.');
+            }
+        });
+    }
+
 
     public function rules(): array
     {
@@ -26,6 +38,7 @@ class ToggleWatchlistRequest extends BaseApiRequest
     {
         return [
             'media_type.in' => 'Media type must be one of movie or tv.',
+            'user_id.required' => 'User ID is required.',
         ];
     }
 }
