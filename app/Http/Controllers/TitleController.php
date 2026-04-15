@@ -13,8 +13,7 @@ class TitleController extends Controller
     {
         $data = [
             'id' => (int) $movie_id,
-            'watchlist' => $this->getList(ListType::WATCHLIST),
-            'favorites' => $this->getList(ListType::FAVORITES),
+            'watchlist' =>  $this->getWatchlist(),
             'inWatchlist' => $this->inList($movie_id, MediaType::MOVIE, ListType::WATCHLIST),
             'inWatched' => $this->inList($movie_id, MediaType::MOVIE, ListType::WATCHED)
         ];
@@ -26,9 +25,7 @@ class TitleController extends Controller
     {
         $data = [
             'id' => (int) $tv_id,
-            'watchlist' => $this->getList(ListType::WATCHLIST),
-            'favorites' => $this->getList(ListType::FAVORITES),
-            'watched' => $this->getList(ListType::WATCHED),
+            'watchlist' =>  $this->getWatchlist(),
             'inWatchlist' => $this->inList($tv_id, MediaType::TV, ListType::WATCHLIST),
             'inWatched' => $this->inList($tv_id, MediaType::TV, ListType::WATCHED)
         ];
@@ -49,17 +46,25 @@ class TitleController extends Controller
             ->exists();
     }
 
-    private function getList($listType)
+    private function getWatchlist(): array
     {
         $userId = Auth::id();
+        if (!$userId) return ['movie' => collect(), 'tv' => collect()];
 
-        if (!$userId) {
-            return collect();
-        }
-
-        return UserList::defaultOfType($userId, $listType)
+        $items = UserList::defaultOfType($userId, ListType::WATCHLIST)
             ->items()
-            ->with('mediaType')
-            ->pluck('media_id');
+            ->pluck('media_id', 'media_type')
+            ->groupBy('media_type');
+
+        $items = UserList::defaultOfType($userId, ListType::WATCHLIST)
+            ->items()
+            ->get(['media_id', 'media_type'])
+            ->groupBy('media_type')
+            ->map(fn($group) => $group->pluck('media_id'));
+
+        return [
+            'movie' => $items->get(MediaType::MOVIE, collect()),
+            'tv'    => $items->get(MediaType::TV, collect()),
+        ];
     }
 }
