@@ -21,10 +21,10 @@ Route::middleware('auth')->group(function () {
 // Auth required
 Route::middleware(['auth'])->group(function () {
     Route::get('/watchlist', WatchlistIndexController::class)->name('watchlist.index');
-
-    Route::get('/movie/{movie_id}', [TitleController::class, 'movie'])->name('movie.show');
-    Route::get('/tv/{tv_id}', [TitleController::class, 'tv'])->name('tv.show');
 });
+
+Route::get('/movie/{movie_id}', [TitleController::class, 'movie'])->name('movie.show');
+Route::get('/tv/{tv_id}', [TitleController::class, 'tv'])->name('tv.show');
 
 require __DIR__ . '/auth.php';
 
