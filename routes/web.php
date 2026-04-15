@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TitleController;
+use App\Http\Controllers\WatchlistIndexController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +20,7 @@ Route::middleware('auth')->group(function () {
 
 // Auth required
 Route::middleware(['auth'])->group(function () {
-    Route::get('/watchlist', function () {
-        return view('watchlist.index');
-    })->name('watchlist.index');
+    Route::get('/watchlist', WatchlistIndexController::class)->name('watchlist.index');
 
     Route::get('/movie/{movie_id}', [TitleController::class, 'movie'])->name('movie.show');
     Route::get('/tv/{tv_id}', [TitleController::class, 'tv'])->name('tv.show');
