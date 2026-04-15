@@ -50,26 +50,28 @@ class TmdbWatchlistController extends Controller
 
     public function toggle(ToggleWatchlistRequest $request): JsonResponse
     {
-        $query = $this->buildQuery($request, ['media_type', 'media_id', 'watchlist']);
+        $mediaTypeId = MediaType::where('name', $request->media_type)->value('id');
 
-        return $this->handleTmdb(fn() => $this->client->toggleWatchlist($query));
-    }
-
-    public function syncTitle(ToggleWatchlistRequest $request): JsonResponse
-    {
-        $mediaType = MediaType::where('name', $request->media_type)->value('id');
-
-        if (!$mediaType) {
-            return response()->json(['success' => false, 'message' => 'Invalid media type: ' . $request->media_type], 422);
+        if (!$mediaTypeId) {
+            return response()->json(['message' => 'Invalid media type: ' . $request->media_type], 422);
         }
 
+        // 1. TMDB first — if this throws, DB is never touched
+        $query = $this->buildQuery($request, ['media_type', 'media_id', 'watchlist']);
+        $tmdbResponse = $this->handleTmdb(fn() => $this->client->toggleWatchlist($query));
+
+        if ($tmdbResponse->getStatusCode() !== 200) {
+            return $tmdbResponse;
+        }
+
+        // 2. DB sync — only reached if TMDB succeeded
         $list     = UserList::defaultOfType(Auth::id(), ListType::WATCHLIST);
-        $criteria = ['media_id' => $request->media_id, 'media_type' => $mediaType];
+        $criteria = ['media_id' => $request->media_id, 'media_type' => $mediaTypeId];
 
         $request->watchlist
             ? $list->items()->firstOrCreate($criteria)
             : $list->items()->where($criteria)->delete();
 
-        return response()->json(['success' => true, 'message' => 'Title synced successfully.']);
+        return response()->json(['success' => true, 'message' => 'Watchlist synced successfully.']);
     }
 }
