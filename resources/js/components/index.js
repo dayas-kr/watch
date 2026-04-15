@@ -301,14 +301,16 @@ export default function registerComponents(Alpine) {
     }));
 
     Alpine.store("db", {
+        user_id: null,
+        route: null,
+
         watchlist: [],
         favorites: [],
         watched: [],
 
-        route: null,
-
         init() {
             this.route = this.setRoute();
+            this.user_id = this.setUserId();
         },
 
         setRoute() {
@@ -331,6 +333,10 @@ export default function registerComponents(Alpine) {
             }
 
             return "unknown";
+        },
+
+        setUserId() {
+            return document.body.dataset.userId ?? null;
         },
     });
 
