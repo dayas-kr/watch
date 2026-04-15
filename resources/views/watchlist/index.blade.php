@@ -94,12 +94,22 @@
                                             <!-- Actions -->
                                             <div @click.prevent
                                                 class="z-10 bg-neutral-500/50 absolute bottom-0 left-0 right-0 backdrop-blur-sm group-hover/img:translate-y-0 flex flex-col gap-2 p-2 translate-y-full transition-all cursor-default">
-                                                <button
-                                                    @click.prevent="$dispatch('watchlist:remove',  { media_id: title.id, media_type: title.media_type, page: $store.db.route })"
-                                                    class="h-7 w-full border border-transparent bg-neutral-500 hover:bg-red-400 rounded-full flex items-center justify-center gap-2 text-white group/delete text-sm font-medium focus:outline-none">
-                                                    <x-lucide-trash class="size-4" stroke-width="2.5" />
-                                                    Remove
-                                                </button>
+                                                <div class="flex items-center justify-end gap-2">
+                                                    <button
+                                                        @click.prevent="$dispatch('watchlist:remove',  { media_id: title.id, media_type: title.media_type, page: $store.db.route, user_id: $store.db.user_id })"
+                                                        class="h-7 w-full bg-neutral-500 hover:bg-red-400 rounded-full flex items-center justify-center gap-2 text-white group/delete text-sm font-medium focus:outline-none">
+                                                        <i class="fa-regular fa-trash-can text-sm"></i>
+                                                        Remove
+                                                    </button>
+                                                    <button
+                                                        class="size-7 shrink-0 bg-neutral-500 hover:bg-neutral-400 rounded-full flex items-center justify-center text-white group/delete text-sm font-medium focus:outline-none">
+                                                        <i class="fa-regular fa-heart text-sm"></i>
+                                                    </button>
+                                                    <div
+                                                        class="size-7 shrink-0 bg-neutral-500 hover:bg-neutral-400 rounded-full flex items-center justify-center text-white group/delete text-sm font-medium focus:outline-none">
+                                                        <i class="fa-regular fa-eye text-sm"></i>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </a>
 
@@ -107,7 +117,7 @@
                                         <div class="space-y-0.5">
                                             <a :href="`/${title.media_type}/${title.id}`"
                                                 x-text="title.title || title.name"
-                                                class="line-clamp-1 font-medium text-sm hover:underline underline-offset-2">
+                                                class="line-clamp-2 font-medium text-sm hover:underline underline-offset-2">
                                             </a>
 
                                             <div class="flex items-center gap-1.5 text-sm text-(--muted-foreground)">
@@ -125,6 +135,7 @@
                                     </div>
                                 </template>
                             </div>
+
                             <div x-show="!gridView" class="grid">
                                 <template x-for="(item, index) in getItems(key)" :key="item.id">
                                     <div class="flex flex-col py-2"
