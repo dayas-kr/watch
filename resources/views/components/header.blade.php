@@ -23,12 +23,50 @@
                 class="text-(--muted-foreground)! hover:text-(--foreground)! rounded-xl! h-7.5!">
                 <x-lucide-compass /> Discover
             </x-ui.button>
-            <a href="{{ route('watchlist.index') }}" class="contents">
+
+            <a href="{{ route('watchlist.index') }}" class="hidden lg:contents">
                 <x-ui.button variant="ghost"
                     class="text-(--muted-foreground)! hover:text-(--foreground)! rounded-xl! h-7.5!">
                     <x-lucide-bookmark-plus /> Watchlist
                 </x-ui.button>
             </a>
+
+            <div x-data="{ open: false }" @keydown.escape.window="open = false" class="relative grid place-items-center">
+                <button @click="open = !open" x-ref="profile"
+                    class="size-8 rounded-full select-none bg-(--muted) overflow-hidden">
+                    <img src="https://vercel.com/api/www/avatar?s=50&u=learntocodeon2023-6539" alt="avatar"
+                        class="w-full h-full object-cover">
+                </button>
+
+                <div x-show="open" x-trap.noScroll="open" x-transition x-cloak
+                    x-anchor.bottom-end.offset.6="$refs.profile" @click.outside="open = false"
+                    class="bg-(--popover) rounded-xl p-1 border border-(--border) text-sm min-w-40 z-50 shadow-xs">
+
+                    <a @mouseover="$el.focus()" href="{{ route('profile.edit') }}"
+                        class="focus:bg-(--muted) focus:outline-none w-full px-2.5 py-1.25 flex items-center gap-2 rounded-lg text-(--secondary-foreground)">
+                        <i class="fa-regular fa-user w-4 text-(--muted-foreground)"></i>
+                        Profile
+                    </a>
+
+                    <a @mouseover="$el.focus()" href="{{ route('lists.index') }}"
+                        class="focus:bg-(--muted) focus:outline-none w-full px-2.5 py-1.25 flex items-center gap-2 rounded-lg text-(--secondary-foreground)">
+                        <i class="fa-solid fa-list w-4 text-(--muted-foreground)"></i>
+                        Lists
+                    </a>
+
+                    <a @mouseover="$el.focus()" href="{{ route('watchlist.index') }}"
+                        class="focus:bg-(--muted) focus:outline-none w-full px-2.5 py-1.25 flex items-center gap-2 rounded-lg text-(--secondary-foreground)">
+                        <i class="fa-regular fa-bookmark w-4 text-(--muted-foreground)"></i>
+                        Watchlist
+                    </a>
+
+                    <button @mouseover="$el.focus()"
+                        class="focus:bg-(--muted) focus:outline-none w-full px-2.5 py-1.25 flex items-center gap-2 rounded-lg text-(--secondary-foreground)">
+                        <i class="fa-solid fa-arrow-right-from-bracket w-4 text-(--muted-foreground)"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
         </nav>
     </div>
 </header>
