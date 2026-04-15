@@ -31,7 +31,7 @@
     @stack('styles')
 </head>
 
-<body class="antialiased bg-(--background) text-(--foreground)">
+<body class="antialiased bg-(--background) text-(--foreground)" data-user-id="@json(auth()->id())">
     <!-- Page Content -->
     <div class="min-h-screen">{{ $slot }}</div>
 
