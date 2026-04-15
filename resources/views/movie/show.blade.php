@@ -1,8 +1,8 @@
 <x-base-layout>
-    <div x-data="movie(@js($data))" @sync:watchlist.window="syncWatchlist($event.detail)"
-        @sync:watched.window="syncWatched($event.detail)" class="flex flex-col min-h-screen font-body">
+    <div class="flex flex-col min-h-screen font-body">
         <x-header />
-        <main class="flex-1">
+        <main x-data="movie(@js($data))" @sync:watchlist.window="syncWatchlist($event.detail)"
+            @sync:watched.window="syncWatched($event.detail)" class="flex-1">
             <!-- Loading -->
             <div x-show="loading" class="max-w-7xl px-4 mx-auto sm:px-3 py-6 space-y-4">
                 Loading...
