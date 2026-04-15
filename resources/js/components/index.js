@@ -21,46 +21,6 @@ export default function registerComponents(Alpine) {
         },
     }));
 
-    Alpine.store("db", {
-        user_id: null,
-        route: null,
-
-        watchlist: [],
-        favorites: [],
-        watched: [],
-
-        init() {
-            this.route = this.setRoute();
-            this.user_id = this.setUserId();
-        },
-
-        setRoute() {
-            const pathname = new URL(window.location.href).pathname;
-
-            const staticRoutes = {
-                "/": "home",
-                "/watchlist": "watchlist",
-            };
-
-            if (staticRoutes[pathname]) {
-                return staticRoutes[pathname];
-            }
-
-            const match = pathname.match(/^\/(movie|tv)\/(\d+)/);
-
-            if (match) {
-                const [, type] = match;
-                return `${type}.show`;
-            }
-
-            return "unknown";
-        },
-
-        setUserId() {
-            return document.body.dataset.userId ?? null;
-        },
-    });
-
     Alpine.data("titleCard", (title) => ({
         title,
         inWatchlist: false,
@@ -68,39 +28,22 @@ export default function registerComponents(Alpine) {
         init() {
             const watchlist = Alpine.store("db").watchlist;
 
-            this.inWatchlist = watchlist.includes(title.id);
+            this.inWatchlist = watchlist[this.title.media_type].includes(
+                title.id,
+            );
         },
 
         updateWatchlist(event) {
-            const { id, watchlist } = event.detail;
-
-            if (id !== this.title.id) return;
+            const { media_id, media_type, watchlist } = event.detail;
+            if (
+                media_id !== this.title.id ||
+                media_type !== this.title.media_type
+            )
+                return;
 
             this.inWatchlist = watchlist;
         },
     }));
-
-    Alpine.store("watchlist", {
-        items: new Set(),
-
-        key(media_id, media_type, action) {
-            return `${media_id}-${media_type}-${action}`;
-        },
-
-        has(media_id, media_type, action) {
-            return this.items.has(this.key(media_id, media_type, action));
-        },
-
-        add(media_id, media_type) {
-            this.items.delete(this.key(media_id, media_type, "removed"));
-            this.items.add(this.key(media_id, media_type, "added"));
-        },
-
-        remove(media_id, media_type) {
-            this.items.delete(this.key(media_id, media_type, "added"));
-            this.items.add(this.key(media_id, media_type, "removed"));
-        },
-    });
 
     Alpine.data("watchlistManager", () => ({
         loading: false,
@@ -151,7 +94,8 @@ export default function registerComponents(Alpine) {
                 this.$dispatch("delete:soft", { media_id, media_type });
             }
             this.$dispatch("title-card:sync-watchlist", {
-                id: media_id,
+                media_id: media_id,
+                media_type: media_type,
                 watchlist,
             });
 
@@ -208,7 +152,8 @@ export default function registerComponents(Alpine) {
             }
 
             this.$dispatch("title-card:sync-watchlist", {
-                id: media_id,
+                media_id: media_id,
+                media_type: media_type,
                 watchlist: !watchlist,
             });
 
