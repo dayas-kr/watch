@@ -70,4 +70,18 @@ class TmdbWatchlistController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Watchlist synced successfully.']);
     }
+
+    public function sync(ToggleWatchlistRequest $request): JsonResponse
+    {
+        $mediaTypeId = MediaType::where('name', $request->media_type)->value('id');
+
+        $list     = UserList::defaultOfType(Auth::id(), ListType::WATCHLIST);
+        $criteria = ['media_id' => $request->media_id, 'media_type' => $mediaTypeId];
+
+        $request->watchlist
+            ? $list->items()->firstOrCreate($criteria)
+            : $list->items()->where($criteria)->delete();
+
+        return response()->json(['success' => true, 'message' => 'Database synced successfully.']);
+    }
 }
