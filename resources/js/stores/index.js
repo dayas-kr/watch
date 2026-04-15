@@ -36,13 +36,18 @@ export default function registerStores(Alpine) {
         user_id: null,
         route: null,
 
-        watchlist: [],
-        favorites: [],
-        watched: [],
+        watchlist: { movie: [], tv: [] },
 
         init() {
             this.route = this.setRoute();
             this.user_id = this.setUserId();
+        },
+
+        setup(data) {
+            const { watchlist } = data;
+
+            this.watchlist.movie = watchlist.movie;
+            this.watchlist.tv = watchlist.tv;
         },
 
         setRoute() {
