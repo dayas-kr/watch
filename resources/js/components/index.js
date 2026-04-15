@@ -414,23 +414,21 @@ export default function registerComponents(Alpine) {
         },
 
         update(event, watchlist) {
-            const { media_id, media_type, page = null } = event.detail;
+            const { media_id, media_type } = event.detail;
             const store = Alpine.store("watchlist");
+            const user_id = Alpine.store("db").user_id;
+            const page = Alpine.store("db").route;
 
             this.loading = true;
             this.error = false;
 
+            // Optimistic UI
             if (["movie.show", "tv.show"].includes(page)) {
                 this.$dispatch("sync:watchlist", watchlist);
             }
-
             if (page === "watchlist") {
-                this.$dispatch("delete:soft", {
-                    media_id,
-                    media_type,
-                });
+                this.$dispatch("delete:soft", { media_id, media_type });
             }
-
             this.$dispatch("title-card:sync-watchlist", {
                 id: media_id,
                 watchlist,
@@ -439,98 +437,67 @@ export default function registerComponents(Alpine) {
             $.ajax({
                 url: "/api/watchlist",
                 method: "POST",
-                data: { media_id, media_type, watchlist },
+                data: { media_id, media_type, watchlist, user_id },
                 success: (res) => {
-                    if (!res.success) {
-                        this.loading = false;
-                        this.error = true;
-                        return this.handleError("Request unsuccessful", {
-                            media_id,
-                            media_type,
-                        });
-                    }
-
-                    $.ajax({
-                        url: "/api/watchlist/sync_title",
-                        method: "POST",
-                        data: { media_id, media_type, watchlist },
-                        success: (syncRes) => {
-                            this.loading = false;
-
-                            if (syncRes.success) {
-                                this.$dispatch("toast", {
-                                    type: "success",
-                                    title: "Watchlist updated successfully",
-                                });
-
-                                if (page === "watchlist") {
-                                    this.$dispatch("delete:permanent", {
-                                        media_id,
-                                        media_type,
-                                    });
-                                }
-
-                                return;
-                            }
-
-                            this.$dispatch("toast", {
-                                type: "error",
-                                title: "Sync failed",
-                            });
-
-                            if (page === "watchlist") {
-                                this.$dispatch("delete:rollback", {
-                                    media_id,
-                                    media_type,
-                                });
-                            }
-                        },
-                        error: () => {
-                            this.loading = false;
-
-                            this.$dispatch("toast", {
-                                type: "error",
-                                title: "Sync request failed",
-                            });
-
-                            if (page === "watchlist") {
-                                this.$dispatch("delete:rollback", {
-                                    media_id,
-                                    media_type,
-                                });
-                            }
-                        },
-                    });
-                },
-                error: () => {
-                    if (["movie", "tv"].includes(page)) {
-                        this.$dispatch("sync:watchlist", !watchlist);
-                    }
-
-                    if (page === "watchlist") {
-                        this.$dispatch("delete:rollback", {
-                            media_id,
-                            media_type,
-                        });
-                    }
-
-                    this.$dispatch("title-card:sync-watchlist", {
-                        id: media_id,
-                        watchlist: !watchlist,
-                    });
-
-                    watchlist === 1
-                        ? store.remove(media_id, media_type)
-                        : store.add(media_id, media_type);
-
                     this.loading = false;
-                    this.error = true;
+
+                    if (!res.success) {
+                        return this._rollback(
+                            watchlist,
+                            media_id,
+                            media_type,
+                            page,
+                            store,
+                        );
+                    }
 
                     this.$dispatch("toast", {
-                        type: "error",
-                        title: "Request failed, changes rolled back",
+                        type: "success",
+                        title: "Watchlist updated successfully",
                     });
+
+                    if (page === "watchlist") {
+                        this.$dispatch("delete:permanent", {
+                            media_id,
+                            media_type,
+                        });
+                    }
                 },
+                error: (xhr) => {
+                    this.loading = false;
+                    this._rollback(
+                        watchlist,
+                        media_id,
+                        media_type,
+                        page,
+                        store,
+                    );
+                },
+            });
+        },
+
+        _rollback(watchlist, media_id, media_type, page, store) {
+            this.error = true;
+
+            if (["movie.show", "tv.show"].includes(page)) {
+                this.$dispatch("sync:watchlist", !watchlist);
+            }
+            if (page === "watchlist") {
+                this.$dispatch("delete:rollback", { media_id, media_type });
+            }
+
+            this.$dispatch("title-card:sync-watchlist", {
+                id: media_id,
+                watchlist: !watchlist,
+            });
+
+            watchlist === 1
+                ? store.remove(media_id, media_type)
+                : store.add(media_id, media_type);
+
+            this.$dispatch("toast", {
+                type: "error",
+                title: "Request failed, changes rolled back",
             });
         },
 
@@ -539,6 +506,10 @@ export default function registerComponents(Alpine) {
 
             if (!media_id || !["movie", "tv"].includes(media_type)) {
                 return this.handleError("Invalid event data");
+            }
+
+            if (!Alpine.store("db").user_id) {
+                return this.handleError("User ID is required");
             }
 
             return true;
