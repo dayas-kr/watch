@@ -1,5 +1,5 @@
 <x-base-layout>
-    <div class="flex flex-col min-h-screen font-body">
+    <div x-init="$store.db.setup(@js($data))" class="flex flex-col min-h-screen font-body">
         <x-header />
         <main x-data="tv(@js($data))" @sync:watchlist.window="syncWatchlist($event.detail)"
             @sync:watched.window="syncWatched($event.detail)" class="flex-1">
