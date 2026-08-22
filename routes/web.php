@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ListController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TitleController;
 use App\Http\Controllers\WatchlistIndexController;
@@ -21,6 +22,9 @@ Route::middleware('auth')->group(function () {
 // Auth required
 Route::middleware(['auth'])->group(function () {
     Route::get('/watchlist', WatchlistIndexController::class)->name('watchlist.index');
+
+    Route::get('/lists', [ListController::class, 'index'])->name('lists.index');
+    Route::get('/lists/{list_id}', [ListController::class, 'show'])->name('lists.show');
 });
 
 Route::get('/movie/{movie_id}', [TitleController::class, 'movie'])->name('movie.show');
@@ -29,3 +33,7 @@ Route::get('/tv/{tv_id}', [TitleController::class, 'tv'])->name('tv.show');
 require __DIR__ . '/auth.php';
 
 require __DIR__ . '/ajax.php';
+
+Route::get('/insta', function () {
+    return view('insta');
+});

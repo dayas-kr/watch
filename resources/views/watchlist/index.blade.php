@@ -1,11 +1,11 @@
 <x-base-layout title="Watchlist">
-    <div class="flex flex-col min-h-screen font-body">
+    <div x-init="$store.db.setup(@js($data))" class="flex flex-col min-h-screen font-body">
         <x-header />
         <main x-data="watchlist" @delete:soft.window="softDelete($event)"
             @delete:rollback.window="rollbackDelete($event)" @delete:permanent.window="delete($event)" class="flex-1">
-            <div class="max-w-7xl px-4 py-8 mx-auto sm:px-3 sm:py-6">
-                <div class="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 gap-y-2 mb-4 md:mb-6 lg:mb-8">
-                    <h1 class="text-xl sm:text-2xl font-semibold text-(--foreground)">
+            <div class="max-w-7xl px-4 py-4 mx-auto sm:px-3 sm:py-6">
+                <div class="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 gap-y-2 mb-4 md:mb-5">
+                    <h1 class="text-xl sm:text-2xl font-semibold text-(--foreground) select-none">
                         My Watchlist
                     </h1>
 
@@ -23,21 +23,22 @@
 
                     <div class="flex items-center gap-2 ml-auto col-span-full md:col-span-1">
                         <!-- Filter / Sort -->
-                        <div class="relative">
+                        <div>
                             <button @click="toggleFilterBy" x-ref="filterByTrigger" :aria-expanded="filterBy.open"
-                                class="px-3 text-sm font-medium text-(--muted-foreground) hover:bg-(--muted)/75 active:bg-(--muted)/75 aria-expanded:bg-(--muted)/75 hover:text-(--foreground) rounded-xl h-7.5 select-none">
-                                <span x-text="`Filter by: ${filterByLabel}`"></span>
+                                class="flex items-center gap-1.5 px-3 text-sm font-medium text-(--muted-foreground) hover:bg-(--muted)/75 active:bg-(--muted)/75 aria-expanded:bg-(--muted)/75 hover:text-(--foreground) rounded-xl h-8 select-none transition-colors border border-(--border)">
+                                <x-lucide-sliders-horizontal class="size-3.5" />
+                                <span x-text="filterByLabel"></span>
                             </button>
                             <div x-show="filterBy.open" x-trap.noScroll="filterBy.open" @click.outside="closeFilterBy"
                                 @keydown.escape.window="closeFilterBy" @keydown.down="$focus.next()"
                                 @keydown.up="$focus.previous()" x-anchor.offset.4="$refs.filterByTrigger"
                                 x-ref="filterByContent" x-transition
-                                class="flex flex-col z-10 bg-(--popover) border border-(--border) shadow p-1 rounded-xl w-full">
+                                class="flex flex-col z-10 bg-(--popover) border border-(--border) shadow p-1 rounded-xl">
                                 <template x-for="(value, key) in filterBy.options" :key="key">
                                     <button :data-key="key" @click="filterBy.value = key; closeFilterBy()"
                                         @mouseenter="$el.focus()"
-                                        class="flex px-3 py-1 select-none items-center text-sm font-medium focus:bg-(--muted) focus:outline-none text-left rounded-md">
-                                        <span x-text="value"></span>
+                                        class="flex px-3 py-1 select-none items-center text-sm font-medium focus:bg-(--muted) focus:outline-none text-left rounded-md gap-3">
+                                        <span x-text="value" class="whitespace-nowrap"></span>
                                         <x-lucide-check class="size-3.5 ml-auto" stroke-width="3"
                                             x-show="filterBy.value === key" />
                                     </button>
@@ -46,9 +47,9 @@
                         </div>
 
                         <!-- Order by -->
-                        <button @click="toggleOrderBy"
-                            class="text-sm font-medium text-(--muted-foreground) hover:bg-(--muted)/75 active:bg-(--muted)/75 hover:text-(--foreground) rounded-full size-7.5 select-none grid place-items-center">
-                            <i class="fa-solid fa-arrow-down"
+                        <button @click="toggleOrderBy" title="Toggle sort order"
+                            class="flex items-center justify-center text-sm font-medium text-(--muted-foreground) hover:bg-(--muted)/75 active:bg-(--muted)/75 hover:text-(--foreground) rounded-xl size-8 select-none border border-(--border) transition-colors">
+                            <i class="fa-solid fa-arrow-down-short-wide text-xs transition-transform duration-200"
                                 :class="{ 'rotate-180': $data[source].orderByCreatedAsc }"></i>
                         </button>
 
@@ -68,6 +69,15 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Search -->
+                    <x-ui.input-group class="col-span-full mt-2 select-none">
+                        <x-ui.input-group-addon @click="$refs.searchInput.focus()">
+                            <x-lucide-search />
+                        </x-ui.input-group-addon>
+                        <x-ui.input-group-input x-ref="searchInput" x-model="search" x-bind:placeholder="placeholder"
+                            @keydown.escape="search = ''" />
+                    </x-ui.input-group>
                 </div>
 
                 <template x-for="(value, key) in sources" :key="key">
@@ -105,9 +115,10 @@
                                                         class="size-7 shrink-0 bg-neutral-500 hover:bg-neutral-400 rounded-full flex items-center justify-center text-white group/delete text-sm font-medium focus:outline-none">
                                                         <i class="fa-regular fa-heart text-sm"></i>
                                                     </button>
-                                                    <div
+
+                                                    <div @click="$dispatch('list:open-dialog', title)"
                                                         class="size-7 shrink-0 bg-neutral-500 hover:bg-neutral-400 rounded-full flex items-center justify-center text-white group/delete text-sm font-medium focus:outline-none">
-                                                        <i class="fa-regular fa-eye text-sm"></i>
+                                                        <i class="fa-solid fa-ellipsis text-sm"></i>
                                                     </div>
                                                 </div>
                                             </div>
@@ -238,6 +249,7 @@
     </div>
 
     <x-titles.watchlist-manager />
+    <x-titles.list-manager />
 
     @push('head')
         @vite('resources/js/pages/watchlist.js')

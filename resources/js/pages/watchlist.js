@@ -11,6 +11,12 @@ Alpine.data("watchlist", () => ({
     MAX_RETRIES: 3,
     RETRY_DELAY_MS: 1000,
 
+    search: "",
+
+    get placeholder() {
+        return `Search ${this.sources[this.source]}...`;
+    },
+
     filterBy: {
         open: Alpine.$persist(false).as("watchlist-filter-preference"),
         value: "added",
@@ -104,9 +110,15 @@ Alpine.data("watchlist", () => ({
     getItems(type) {
         if (!this[type]) return [];
 
-        const items = this[type].data.filter(
-            (item) => !this[type].softDeleteItems.includes(item.id),
-        );
+        const query = this.search.trim().toLowerCase();
+
+        const items = this[type].data
+            .filter((item) => !this[type].softDeleteItems.includes(item.id))
+            .filter((item) => {
+                if (!query) return true;
+                const title = (item.title || item.name || "").toLowerCase();
+                return title.includes(query);
+            });
 
         if (this.filterBy.value === "added") {
             return items;
@@ -203,6 +215,9 @@ Alpine.data("watchlist", () => ({
 
                     this[type].loading = false;
                     this[type].initialized = true;
+
+                    // ← ADD THIS
+                    this.syncMissingItems(res.data.results, type);
                 } else {
                     this._retryOrFail(
                         type,
@@ -234,6 +249,33 @@ Alpine.data("watchlist", () => ({
 
             console.error(`Watchlist [${type}] failed`, message);
         }
+    },
+
+    syncMissingItems(apiItems, type) {
+        const dbIds = new Set(this.$store.db.watchlist[type].map(Number));
+
+        const missing = apiItems.filter((item) => !dbIds.has(item.id));
+
+        if (missing.length === 0) return;
+
+        missing.forEach((item) => {
+            $.ajax({
+                url: "/api/watchlist/sync",
+                method: "POST",
+                data: {
+                    media_id: item.id,
+                    media_type: type,
+                    watchlist: 1,
+                    user_id: this.$store.db.user_id,
+                },
+                error: (xhr) => {
+                    console.error(
+                        `[Watchlist] Failed to sync ${type} ${item.id}:`,
+                        xhr.responseJSON?.message ?? "Unknown error",
+                    );
+                },
+            });
+        });
     },
 
     softDelete(event) {

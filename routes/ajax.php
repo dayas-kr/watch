@@ -39,13 +39,12 @@ Route::prefix('/api')->group(function () {
     Route::get('/', [TmdbListController::class, 'index'])->name('api.lists.index');
     Route::post('/', [TmdbListController::class, 'store'])->name('api.lists.store');
 
+    Route::post('/{list_id}/clear', [TmdbListController::class, 'clear'])->name('api.lists.clear');
+    Route::post('/{list_id}/items', [TmdbListController::class, 'addItems'])->name('api.lists.items.store');
+    Route::delete('/{list_id}/items', [TmdbListController::class, 'removeItems'])->name('api.lists.items.destroy');
+
     Route::get('/{list_id}', [TmdbListController::class, 'show'])->name('api.lists.show');
     Route::delete('/{list_id}', [TmdbListController::class, 'destroy'])->name('api.lists.destroy');
-    Route::post('/{list_id}/clear', [TmdbListController::class, 'clear'])->name('api.lists.clear');
-
-    Route::post('/{list_id}/items', [TmdbListController::class, 'addItems'])->name('api.lists.items.add');
-    Route::delete('/{list_id}/items', [TmdbListController::class, 'removeItems'])->name('api.lists.items.remove');
-    Route::get('/{list_id}/item_status', [TmdbListController::class, 'itemStatus'])->name('api.lists.item_status');
   });
 
   Route::post('/watched', WatchController::class)->name('api.watched.toggle');

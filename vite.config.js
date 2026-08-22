@@ -11,6 +11,8 @@ export default defineConfig({
                 "resources/js/pages/watchlist.js",
                 "resources/js/pages/movie.js",
                 "resources/js/pages/tv.js",
+                "resources/js/pages/lists.js",
+                "resources/js/pages/list.js",
             ],
             refresh: true,
         }),

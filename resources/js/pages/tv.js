@@ -79,6 +79,7 @@ Alpine.data("tv", (data) => ({
             success: (res) => {
                 if (res.success) {
                     this.title = res.data;
+                    this.title.media_type = "tv";
                     this.loading = false;
                 } else {
                     this._retryTitleOrFail(attempt);

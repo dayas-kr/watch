@@ -14,16 +14,20 @@ use Illuminate\Support\Facades\Log;
 class TmdbClient
 {
     protected string $baseUrl;
+    protected string $baseUrlV4;
     protected string $apiKey;
     protected string $accessToken;
     protected string $accountId;
+    protected string $userAccessToken;
 
     public function __construct()
     {
         $this->baseUrl     = $this->requireConfig('tmdb.base_url');
+        $this->baseUrlV4  = $this->requireConfig('tmdb.base_url_v4');
         $this->apiKey      = $this->requireConfig('tmdb.api_key');
         $this->accessToken = $this->requireConfig('tmdb.access_token');
         $this->accountId   = $this->requireConfig('tmdb.account_id');
+        $this->userAccessToken = $this->requireConfig('tmdb.user_access_token');
     }
 
     // -------------------------------------------------------
@@ -100,35 +104,27 @@ class TmdbClient
 
     public function createList(array $data = []): array
     {
-        return $this->postV4('/list', $data);
+        return $this->postUserV4('/list', $data);
     }
 
     public function clearList(int|string $list_id): array
     {
-        return $this->postV4("/list/{$list_id}/clear");
+        return $this->postUserV4("/list/{$list_id}/clear");
     }
 
     public function deleteList(int|string $list_id): array
     {
-        return $this->deleteV4("/list/{$list_id}");
+        return $this->deleteUserV4("/list/{$list_id}");
     }
 
     public function addListItems(int|string $list_id, array $items): array
     {
-        return $this->postV4("/list/{$list_id}/items", ['items' => $items]);
+        return $this->postUserV4("/list/{$list_id}/items", ['items' => $items]);
     }
 
     public function removeListItems(int|string $list_id, array $items): array
     {
-        return $this->deleteV4("/list/{$list_id}/items", ['items' => $items]);
-    }
-
-    public function listItemStatus(int|string $list_id, int $media_id, string $media_type): array
-    {
-        return $this->getV4("/list/{$list_id}/item_status", [
-            'media_id'   => $media_id,
-            'media_type' => $media_type,
-        ]);
+        return $this->deleteUserV4("/list/{$list_id}/items", ['items' => $items]);
     }
 
     // -------------------------------------------------------
@@ -332,6 +328,24 @@ class TmdbClient
         }
     }
 
+    public function postUserV4(string $endpoint, array $data = []): array
+    {
+        try {
+            return $this->userV4()->post($endpoint, $data)->json();
+        } catch (ConnectionException $e) {
+            $this->handleConnectionException($endpoint, $e);
+        }
+    }
+
+    public function deleteUserV4(string $endpoint, array $data = []): array
+    {
+        try {
+            return $this->userV4()->delete($endpoint, $data)->json();
+        } catch (ConnectionException $e) {
+            $this->handleConnectionException($endpoint, $e);
+        }
+    }
+
     // -------------------------------------------------------
     // CLIENTS
     // -------------------------------------------------------
@@ -347,6 +361,18 @@ class TmdbClient
     public function v4(): PendingRequest
     {
         return $this->base()->withToken($this->accessToken);
+    }
+
+    public function userV4(): PendingRequest
+    {
+        return Http::baseUrl($this->baseUrlV4)
+            ->acceptJson()
+            ->timeout(10)
+            ->retry(3, fn($attempt) => $attempt * 200)
+            ->withToken($this->userAccessToken)
+            ->throw(function (Response $response, RequestException $e) {
+                $this->handleRequestException($response, $e);
+            });
     }
 
     protected function base(): PendingRequest

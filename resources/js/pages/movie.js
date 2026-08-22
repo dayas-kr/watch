@@ -7,7 +7,7 @@ import similar from "./titles/similar";
 
 Alpine.data("recommendations", recommendations);
 Alpine.data("similar", similar);
-Alpine.store("title", { id: null, media_type: null });
+Alpine.store("title", { id: null, media_type: null, name: null });
 
 Alpine.data("movie", (data) => ({
     title: {},
@@ -70,6 +70,9 @@ Alpine.data("movie", (data) => ({
             success: (res) => {
                 if (res.success) {
                     this.title = res.data;
+                    this.title.media_type = "movie";
+                    Alpine.store("title").name =
+                        res.data.title || res.data.name;
                     this.loading = false;
                 } else {
                     this._retryTitleOrFail(attempt);

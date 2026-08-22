@@ -44,10 +44,11 @@ export default function registerStores(Alpine) {
         },
 
         setup(data) {
-            const { watchlist } = data;
+            const { watchlist, user_lists } = data;
 
             this.watchlist.movie = watchlist.movie;
             this.watchlist.tv = watchlist.tv;
+            this.user_lists = user_lists;
         },
 
         setRoute() {
@@ -56,16 +57,21 @@ export default function registerStores(Alpine) {
             const staticRoutes = {
                 "/": "home",
                 "/watchlist": "watchlist",
+                "/lists": "lists",
             };
 
             if (staticRoutes[pathname]) {
                 return staticRoutes[pathname];
             }
 
-            const match = pathname.match(/^\/(movie|tv)\/(\d+)/);
+            const listMatch = pathname.match(/^\/lists\/(\d+)/);
+            if (listMatch) {
+                return "lists.show";
+            }
 
-            if (match) {
-                const [, type] = match;
+            const mediaMatch = pathname.match(/^\/(movie|tv)\/(\d+)/);
+            if (mediaMatch) {
+                const [, type] = mediaMatch;
                 return `${type}.show`;
             }
 

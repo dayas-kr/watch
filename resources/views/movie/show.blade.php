@@ -367,6 +367,7 @@
     </div>
 
     <x-titles.watchlist-manager />
+    <x-titles.list-manager />
     <x-titles.watched-manager />
 
     @push('head')
